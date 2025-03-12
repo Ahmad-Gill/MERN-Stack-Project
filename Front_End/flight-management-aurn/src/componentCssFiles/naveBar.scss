@@ -1,0 +1,73 @@
+$backgroundColor: white;
+$TextColor: black;
+
+.navBArMain {
+  background-color: $backgroundColor;
+  color: $TextColor;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.logo {
+  display: inline-block; // Takes only image space
+  margin: 0;
+  position: relative; // Changed from absolute to relative to align properly
+}
+
+.logo img {
+  width: 100px;
+  height: auto;
+  display: block;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+  margin-left: 20px; // ✅ Adjusted for less spacing
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: $TextColor;
+  font-size: 16px;
+}
+.nav-links a:hover {
+  text-decoration: underline;
+  text-decoration-color: darkblue; // Adds a dark blue underline
+  text-decoration-thickness: 2px; // Makes the underline thicker
+  color: $TextColor;
+  font-size: 16px;
+}
+
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: auto; // Keeps search bar at the right side
+}
+
+.NaveSearch {
+  width: 400px; // ✅ Reduced width if needed
+  max-width: 400px;
+  padding: 10px 40px 10px 10px;
+  font-size: 16px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  margin-top: -2px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: gray;
+  font-size: 18px;
+  pointer-events: none;
+}

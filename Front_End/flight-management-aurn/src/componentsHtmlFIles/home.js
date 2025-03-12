@@ -1,5 +1,5 @@
 import React from "react";
-import "../componentCssFiles/home.css";
+import "../componentCssFiles/home.scss";
 import data from "../componentsJsFiles/homeData.js";
 
 
