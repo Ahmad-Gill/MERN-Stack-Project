@@ -1,67 +1,130 @@
+
+// -------------------General VAriables 
+
+
+
 $backgroundColor: white;
+$primaryColor:  darkblue;
 $TextColor: black;
 
-.navBArMain {
-  background-color: $backgroundColor;
+
+// -------------------Theme Section ----------------
+.brightness-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
   color: $TextColor;
+  transition: color 0.3s;
+  margin-left: 20px;
+}
+.brightness-btn:hover {
+  background-color: transparent;
+}
+body.dark-mode {
+  background: black;
+  color: white;
+}
+body.dark-mode .brightness-btn {
+  color: white;
+}
+body.dark-mode .navBArMain {
+  box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.8);
+}
+body.dark-mode a {
+  color: white;
+}
+.dark-mode .hamburger {
+  background: black;
+  color: white;
+}
+body.dark-mode .notification-btn {
+  color: white;
+}
+body.dark-mode .notification-panel {
+  color: white;
+  background: black;
+}
+
+body.dark-mode .search-results-container {
+  color: white;
+  background: black;
+  border: 2px solid white;
+  padding: 5px;
+  border-radius: 5px;
+}
+body.dark-mode .open a {
+  color: white;
+  background-color: black;
+}
+body.dark-mode .nav-links {
+  color: white;
+  background-color: black;
+  // border: 2px solid white;
+  // padding: 5px;
+  // border-radius: 5px;
+}
+
+
+
+// --------General NAve BAR --------------------------------
+.navBArMain {
   padding: 10px 20px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   position: relative;
 }
-
-.logo {
-  display: inline-block; // Takes only image space
-  margin: 0;
-  position: relative; // Changed from absolute to relative to align properly
-}
-
-.logo img {
-  width: 100px;
-  height: auto;
-  display: block;
-}
-
 .nav-links {
   display: flex;
   gap: 15px;
-  margin-left: 20px; // ✅ Adjusted for less spacing
+  margin-left: 20px;
 }
-
 .nav-links a {
   text-decoration: none;
-  color: $TextColor;
   font-size: 16px;
+  color: $TextColor;
 }
 .nav-links a:hover {
   text-decoration: underline;
-  text-decoration-color: darkblue; // Adds a dark blue underline
-  text-decoration-thickness: 2px; // Makes the underline thicker
-  color: $TextColor;
-  font-size: 16px;
+  text-decoration-color: $primaryColor;
+  text-decoration-thickness: 2px;
+}
+
+// --------LOGO --------------------------------
+.logo img {
+  width: 100px;
+  display: block;
+}
+// ----------------------------------------------------------------Hamburger------------------------------------------------
+.hamburger {
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  display: none;
+  background: white;
 }
 
 
+
+// ---------------------------------------------------------------- Search------------------------------------------------
 .search-container {
   position: relative;
   display: flex;
   align-items: center;
-  margin-left: auto; // Keeps search bar at the right side
+  margin-left: auto;
+  
 }
-
 .NaveSearch {
-  width: 400px; // ✅ Reduced width if needed
-  max-width: 400px;
+  width: 400px;
   padding: 10px 40px 10px 10px;
   font-size: 16px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
   border: none;
   outline: none;
-  margin-top: -2px;
 }
-
 .search-icon {
   position: absolute;
   right: 12px;
@@ -71,3 +134,179 @@ $TextColor: black;
   font-size: 18px;
   pointer-events: none;
 }
+.search-results-container {
+  position: absolute;
+  top: 70px;
+  left: 75%;
+  transform: translateX(-50%);
+  width: 500px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 1000;
+  background: white; 
+  max-height: 300px;
+  overflow-y: auto;
+}
+.search-results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left; 
+}
+
+.search-results li {
+  padding: 10px 15px; 
+  text-align: left; 
+}
+.search-results li:not(:last-child) {
+  margin-bottom: 10px; 
+}
+.search-results a {
+  text-decoration: none;
+  font-size: 16px;
+  color: black;
+  display: block;
+  text-align: left; 
+}
+
+.search-results a:hover {
+  text-decoration: underline;
+}
+
+
+
+// ---------------------------------------------------------------- profile-btn ------------------------------------------------
+.profile-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.profile-preview {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+  transition: border 0.3s, transform 0.3s;
+
+  &:hover {
+    border: 2px solid $primaryColor;
+    transform: scale(1.1);
+  }
+}
+
+
+// ---------------------------------------------------------------- Notification ------------------------------------------------
+.notification-container {
+  position: relative;
+}
+.notification-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+.notification-icon {
+  font-size: 24px;
+  transition: color 0.3s;
+
+
+}
+.notification-dot {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+}
+.notification-panel {
+  position: fixed; 
+  top: 70px; 
+  right: 10px; 
+  width: 250px;
+  max-height: 300px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+  z-index: 9999; 
+  overflow-y: auto;
+}
+.notification-item {
+  padding: 8px;
+  border-bottom: 1px solid #ddd; 
+}
+
+.notification-item:last-child {
+  border-bottom: none; 
+}
+
+.notification-message {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.notification-time {
+  font-size: 12px;
+  display: block;
+}
+
+// ---------------------------------------------------------------- MOBILE VIEW ------------------------------------------------
+@media (max-width: 768px) {
+  .search-results-container {
+    width: 90%;
+  }
+  .hamburger {
+    display: block;
+  }
+  .search-container {
+    display: none;
+  }
+  .nav-links {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 100%;
+    background: $backgroundColor;
+    flex-direction: column;
+    display: none;
+    text-align: center;
+    padding: 10px 0;
+  }
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    right: 0;
+    width: 40%;
+    background-color: $backgroundColor;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    z-index: 1000;
+
+    a {
+      padding: 10px 20px;
+      color: $TextColor;
+      text-decoration: none;
+      font-size: 18px;
+
+      &:hover {
+        text-decoration: underline;
+        text-decoration-color: darkblue;
+        text-decoration-thickness: 2px;
+      }
+    }
+  }
+}
+
