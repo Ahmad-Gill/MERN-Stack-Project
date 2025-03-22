@@ -1,0 +1,187 @@
+.footer {
+  background-color: #222;
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+  width: 100%;
+  position: relative;
+}
+
+.footerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.socialSection {
+  flex: 1;
+  text-align: left;
+
+  .socialLinks {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .icon {
+        font-size: 20px;
+      }
+
+      &:hover {
+        color: #00008B;
+      }
+    }
+  }
+}
+
+.keepInTouch {
+  flex: 1;
+  text-align: center;
+
+  h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .emailForm {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+
+    .emailInput {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      width: 250px;
+      font-size: 16px;
+    }
+
+    .submitButton {
+      background-color: #0000FF;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+
+      &:hover {
+        background-color: #00008B;
+      }
+    }
+  }
+}
+
+.mapContainer {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+
+  .googleMap {
+    width: 300px;
+    height: 200px;
+    border-radius: 10px;
+    border: none;
+  }
+}
+
+.footerCopyright {
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 768px) {
+  .footerContainer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .socialSection, .keepInTouch, .mapContainer {
+    flex: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  .mapContainer {
+    justify-content: center;
+    margin-top: 20px;
+  }
+}
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7); 
+  backdrop-filter: blur(8px); 
+  z-index: 9999;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  border-top: 6px solid #00d4ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite, glow 1.5s infinite alternate;
+}
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes glow {
+  0% { box-shadow: 0 0 10px #00d4ff; }
+  100% { box-shadow: 0 0 20px #00d4ff; }
+}
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #0000FF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

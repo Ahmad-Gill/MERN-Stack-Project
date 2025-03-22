@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Notifications from "../componentsHtmlFIles/Notifications"; 
 import fetchData from "../componentsHtmlFIles/SearchPage"; 
 import { useUser } from "../componentsHtmlFIles//UserContext";
-
 function NveBar() {
   const [search, setSearch] = useState("");
   const { profileImage } = useUser();
