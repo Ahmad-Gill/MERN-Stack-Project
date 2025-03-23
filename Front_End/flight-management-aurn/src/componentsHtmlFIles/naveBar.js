@@ -86,6 +86,7 @@ function NveBar() {
       {/* NAVIGATION LINKS */}
           <div className={`nav-links ${menuOpen ? "open" : ""}`}>
             <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+            <Link to="/Analytics_consumer" onClick={() => setMenuOpen(false)}>Analytics</Link>
           </div>
       {/* Search COntainer */}
           <div className="search-container" ref={searchRef}>
