@@ -8,6 +8,7 @@ import CustomizeProfile from "./componentsHtmlFIles/customizeProfile";
 import { UserProvider } from "./componentsHtmlFIles/UserContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Footer from "./componentsHtmlFIles/Footer";
+import JetTypes from "./componentsHtmlFIles/JetTypes";
 
 
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/customizeProfile" element={<CustomizeProfile />} />
           <Route path="/Analytics_consumer" element={<Analytics_consumer  email="m.ahmadgill01@gmail.com"/>} />
+          <Route path="/jet-types" element={<JetTypes />} />
         </Routes>
         <Footer />
       </BrowserRouter>

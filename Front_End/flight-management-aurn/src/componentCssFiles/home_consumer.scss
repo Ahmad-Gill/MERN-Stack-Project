@@ -1,0 +1,740 @@
+
+
+$backgroundColor: white;
+$primaryColor:  #0000FF;
+$hover:  #00008B;
+$TextColor: black;
+// ----------------------------------------------------------------General Styling
+html, body {
+    overflow-x: hidden; 
+    width: 100vw; 
+  }
+  .heading {
+    font-size: 3.0rem;
+    font-weight: bold;
+  }
+  
+
+// ----------------------------------------------------------------Hero Section
+.hero {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    .video-container {
+      width: 100%;
+      height: 100%;
+  
+      .hero-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+      }
+    }
+  
+    .hero-text {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      color: white;
+      background: rgba(0, 0, 0, 0.5); 
+      padding: 20px;
+      border-radius: 8px;
+    }
+  }
+  .hero-text {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: white;
+    background: rgba(0, 0, 0, 0.5); 
+    padding: 20px 30px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+  
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+  
+    .cta-button {
+      background: $primaryColor;
+      color: $backgroundColor;
+      font-size: 1.2rem;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+  
+      &:hover {
+        background: $hover;
+      }
+    }
+  }
+  
+
+
+// ----------------------------------------------------------------Ecplore Different jets
+  .luxury-experience {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 75vh;
+    width: 100%;
+    overflow: hidden;
+    padding: 40px;
+  
+    .luxury-video-section {
+      width: 50%;
+      height: 100%;
+      position: relative;
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+  
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+        transition: transform 0.4s ease-in-out;
+  
+        &:hover {
+          transform: scale(1.02);
+        }
+      }
+    }
+  
+    .luxury-text-section {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      text-align: left;
+      padding: 40px;
+      height: 100%;
+      border-radius: 12px;
+      box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.08);
+  
+      h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #ff9900;
+      }
+  
+      p {
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+        line-height: 1.5;
+        color: #666;
+      }
+  
+      .luxury-cta-button {
+        background: linear-gradient(90deg, #ffcc00, #ff9900);
+        color: #000;
+        font-size: 1.2rem;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3);
+        font-weight: bold;
+        text-transform: uppercase;
+  
+        &:hover {
+          background: linear-gradient(90deg, #ff9900, #ffcc00);
+          transform: scale(1.07);
+          box-shadow: 0 6px 15px rgba(255, 153, 0, 0.5);
+        }
+      }
+    }
+    @media (max-width: 1024px) {
+      padding: 20px;
+  
+      .luxury-text-section {
+        padding: 25px;
+        h1 {
+          font-size: 2.2rem;
+        }
+        p {
+          font-size: 1rem;
+        }
+      }
+    }
+  
+    @media (max-width: 768px) {
+      flex-direction: column;
+      height: auto;
+      padding: 20px;
+  
+      .luxury-video-section {
+        width: 100%;
+        height: auto;
+      }
+  
+      .luxury-text-section {
+        width: 100%;
+        padding: 30px;
+        align-items: center;
+        text-align: center;
+  
+        h1 {
+          font-size: 1.8rem;
+        }
+        p {
+          font-size: 1rem;
+        }
+      }
+    }
+  
+    @media (max-width: 480px) {
+      padding: 15px;
+  
+      .luxury-text-section {
+        padding: 20px;
+        h1 {
+          font-size: 1.5rem;
+        }
+        p {
+          font-size: 0.9rem;
+        }
+      }
+  
+      .luxury-cta-button {
+        font-size: 1rem;
+        padding: 10px 20px;
+      }
+    }
+  }
+  
+ // --------------------------------- Galery of luxury jets Section----------------
+
+  .jet-showcase {
+    width: 90%; 
+    margin: 0 auto;
+    padding: 50px 0;
+    text-align: center;
+    overflow: hidden;
+  
+    h2 {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 20px;
+  
+      @media (max-width: 768px) {
+        font-size: 2rem;
+      }
+  
+      @media (max-width: 480px) {
+        font-size: 1.8rem;
+      }
+    }
+  
+    .jet-gallery {
+      display: flex;
+      gap: 15px;
+      padding: 20px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+      -ms-overflow-style: none;
+      scroll-padding-left: 0;
+  
+      &::-webkit-scrollbar {
+        display: none;
+      }
+  
+      .jet-item {
+        flex: 0 0 300px;
+        height: 200px;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s ease-in-out;
+        background: white;
+        padding: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+        scroll-snap-align: start;
+  
+        &:first-child {
+          margin-left: 8000px !important; 
+        }
+  
+        &:hover {
+          transform: scale(1.05);
+          box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+        }
+  
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 8px;
+        }
+      }
+    }
+    @media (max-width: 768px) {
+      .jet-gallery {
+        padding-left: 10px; 
+      }
+  
+      .jet-item {
+        flex: 0 0 250px;
+        height: 180px;
+      }
+    }
+  
+    @media (max-width: 480px) {
+      .jet-gallery {
+        padding-left: 5px; 
+      }
+  
+      .jet-item {
+        flex: 0 0 220px;
+        height: 160px;
+      }
+    }
+  }
+  
+  //--------------------------------- Customer Reviews----------------
+
+  .customer-reviews {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+
+    .loading {
+        font-size: 16px;
+        color: #007bff;
+        text-align: center;
+        font-style: italic;
+    }
+
+    .error {
+        font-size: 16px;
+        color: #e74c3c;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .reviews-gallery {
+        display: flex;
+        gap: 20px;
+        animation: scroll-left 15s linear infinite; 
+        padding-bottom: 10px;
+        margin-top: 20px;
+
+        .review-item {
+            flex: 0 0 auto; 
+            width: 250px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            min-height: 180px;
+            height: 200px;
+
+            &:hover {
+                transform: translateY(-5px);
+            }
+
+            .review-text {
+                font-size: 18px;
+                font-style: italic;
+                color: #555;
+                margin-bottom: 10px;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: normal; 
+            }
+
+            .review-author {
+                font-size: 16px;
+                font-weight: bold;
+                color: #333;
+            }
+        }
+    }
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%); 
+    }
+}
+
+
+
+//--------------------------------- About Us section Section----------------
+
+.about-us {
+    display: flex;               
+    justify-content: space-between; 
+    align-items: center;        
+    padding: 20px;                
+    border-radius: 8px;         
+    
+    p {
+      font-size: 1.2rem;     
+      line-height: 1.6;       
+      width: 60%;        
+      margin-right: 20px;   
+    }
+  
+    img {
+      width: 35%;            
+      height: auto;            
+      border-radius: 8px;       
+    }
+  
+    @media (max-width: 768px) {
+      flex-direction: column;    
+      text-align: center;        
+      
+      p {
+        width: 100%;             
+        margin-right: 0;        
+      }
+  
+      img {
+        width: 80%;             
+        margin-top: 20px;   
+      }
+    }
+  }
+
+  
+
+//--------------------------------- Features Section----------------
+
+  .features {
+    display: flex;
+    flex-wrap: wrap;                   
+    justify-content: space-between;    
+    padding: 40px 20px;                 
+    
+    .feature-item {
+        gap: 10px;
+      position: relative;              
+      display: flex;                   
+      flex-direction: column;            
+      align-items: center;             
+      padding: 20px;                    
+      text-align: center;               
+      color: white;                    
+      border-radius: 8px;                
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+      transition: transform 0.3s ease;  
+      height: 300px;                    
+      background-size: cover;          
+      background-position: center;     
+      background-repeat: no-repeat;      
+      
+      &:hover {
+        transform: translateY(-5px);    
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);  
+      }
+      
+      img {
+        display: none;                    
+      }
+      
+      h3 {
+        font-size: 2.5rem;               
+        font-weight: bold;                
+        margin-bottom: 10px;              
+      }
+      
+      p {
+        font-size: 1rem;    
+        font-weight: bold;               
+        line-height: 1.5;                 
+      }
+    }
+    @media (max-width: 1200px) {
+      .feature-item {
+        height: 250px;                     
+      }
+    }
+  
+    @media (max-width: 768px) {
+      .feature-item {
+        height: 200px;                   
+      }
+    }
+  }
+  
+  .features {
+    .feature-item {
+      margin-bottom: 20px; 
+    }
+
+    .col-md-4 {
+      margin-bottom: 20px; 
+    }
+  }
+
+  
+//*--------------------------------- Frequeently asked QUestions Section----------------
+  .faq {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+  
+    .faq-item {
+      margin-bottom: 10px;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+  
+      &:hover {
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+      }
+    }
+  
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      color: #444;
+      padding: 10px;
+  
+      h3 {
+        margin: 0;
+      }
+    }
+  
+    .faq-arrow {
+      font-size: 18px;
+      color: #666;
+      transition: transform 0.3s ease;
+    }
+  
+    .faq-item.open {
+      .faq-arrow {
+        transform: rotate(180deg);
+      }
+    }
+  
+    p {
+      padding: 10px;
+      margin: 0;
+      font-size: 16px;
+      color: #555;
+    }
+  }
+
+//--------------------------------- Our partners Section---------------
+
+  .clients {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  
+    .client-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      
+      img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        transition: transform 0.3s ease-in-out;
+  
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+  
+    @media (max-width: 768px) {
+      .client-logos {
+        gap: 15px;
+        img {
+          width: 100px;
+          height: 100px;
+        }
+      }
+    }
+  
+    @media (max-width: 480px) {
+      .client-logos {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        img {
+          width: 90px;
+          height: 90px;
+        }
+      }
+    }
+  }
+
+
+//--------------------------------- Flight Pricing Calculator Section----------------
+
+  .flight-calculator {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
+    padding: 2rem;
+    max-width: 900px;
+    margin: auto;
+    font-family: Arial, sans-serif;
+
+    .text-container {
+        flex: 1;
+        max-width: 45%;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .form-container {
+        flex: 1;
+        max-width: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-group, .passenger-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        label {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        select {
+            padding: 0.7rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+
+            &:hover {
+                border-color:$hover;
+            }
+
+            &:focus {
+                border-color: $hover;
+                outline: none;
+            }
+        }
+    }
+
+    .calculate-btn {
+        padding: 0.8rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        background-color: $primaryColor;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s ease-in-out;
+
+        &:hover {
+            background-color: $hover;
+        }
+    }
+
+    .result-container {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 2px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+}
+@media (max-width: 768px) {
+  .flight-calculator {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2rem;
+      padding: 1.5rem;
+
+      .text-container {
+          max-width: 100%;
+      }
+
+      .form-container {
+          max-width: 100%;
+          width: 100%;
+          padding: 1.2rem;
+      }
+
+      .result-container {
+          flex-direction: column;
+          gap: 0.8rem;
+      }
+
+      .calculate-btn {
+          width: 100%;
+      }
+  }
+} 

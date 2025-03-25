@@ -82,6 +82,7 @@ body.dark-mode .nav-links {
   top: 0; /* Ensure it sticks to the top */
   left: 0;
   right: 0;
+  z-index: 100000;
 
 }
 .nav-links {
@@ -111,7 +112,6 @@ body.dark-mode .nav-links {
   border: none;
   cursor: pointer;
   display: none;
-  background: white;
 }
 
 
@@ -276,6 +276,7 @@ body.dark-mode .nav-links {
   }
   .hamburger {
     display: block;
+    background: transparent !important;
   }
   .search-container {
     display: none;

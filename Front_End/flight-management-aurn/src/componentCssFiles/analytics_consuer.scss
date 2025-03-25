@@ -68,6 +68,7 @@ $TextColor: black;
 
 .filter-container div {
     display: flex;
+    margin-top: 90px;
     flex-direction: column;
     color: black !important;
     gap: 8px;
@@ -142,7 +143,7 @@ $TextColor: black;
 }
 
 .filter-button-container {
-    margin-top: 100px;
+    margin-top: 200px;
     position: absolute;
     top: 10px;
     right: 10px;
@@ -275,3 +276,51 @@ body.dark-mode .chart-box {
 .analytics-container .MuiTableCell-head {
     white-space: nowrap;
 }
+
+
+
+
+@media (max-width: 768px) {
+    .charts-container {
+        width: 100% !important;
+        padding: 0 10px; /* Add slight padding for better spacing */
+        display: flex;
+        flex-direction: column; /* Stack charts vertically */
+        gap: 20px; /* Add spacing between charts */
+    }
+
+    .chart-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 10px 0; /* Add spacing */
+    }
+
+    canvas {
+        width: 100% !important; /* Stretch width */
+        height: 350px !important; /* Increase height to avoid cropping */
+    }
+
+    .bubble-chart {
+        display: none !important; /* Hide the Bubble chart */
+    }
+    .line-chart canvas {
+        height: 600px !important; /* Increase height */
+    }
+}
+@media (max-width: 768px) {
+    .line-chart {
+        height: 600px !important; /* Increase height of container */
+    }
+
+    .line-chart canvas {
+        height: 600px !important; /* Force canvas height */
+    }
+    .filter-button-container {
+        margin-top: 235px;
+    }
+}
+

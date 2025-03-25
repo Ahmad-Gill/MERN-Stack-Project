@@ -178,22 +178,44 @@ const AnalyticsConsumer = ({ email }) => {
     <div className="row">
         {/* Bar Chart - Total Expenditure per Airline */}
         <div className="col-md-12 col-sm-12 chart-box">
-            <Bar 
-                data={{
-                    labels: airlines,
-                    datasets: [{ label: "Total Expenditure By Airline", data: airlineExpenditure, backgroundColor: "blue" }]
-                }}
-            />
+        <Bar 
+    data={{
+        labels: airlines,
+        datasets: [{
+            label: "Total Expenditure By Airline",
+            data: airlineExpenditure,
+            backgroundColor: "blue"
+        }]
+    }}
+    options={{
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: { title: { display: true, text: "Airlines" } },
+            y: { title: { display: true, text: "Expenditure ($)" } }
+        }
+    }}
+/>
+
         </div>
 
         {/* Line Chart - Total Expenditure Over Time */}
         <div className="col-md-12 col-sm-12 chart-box">
-            <Line 
-                data={{
-                    labels: Object.keys(dateExpenditure),
-                    datasets: [{ label: "Total Expenditure By Date Booked", data: Object.values(dateExpenditure), borderColor: "green" }]
-                }}
-            />
+        <Line 
+    data={{
+        labels: Object.keys(dateExpenditure),
+        datasets: [{
+            label: "Total Expenditure By Date Booked",
+            data: Object.values(dateExpenditure),
+            borderColor: "green"
+        }]
+    }} 
+    options={{
+        responsive: true,
+        maintainAspectRatio: false,  // ❌ Disable aspect ratio to allow height changes
+    }}
+/>
+
         </div>
 
         {/* Pie Chart - Payment Method Distribution */}
@@ -207,7 +229,8 @@ const AnalyticsConsumer = ({ email }) => {
         </div>
 
         {/* Scatter Plot - Flight Duration vs Amount Paid */}
-        <div className="col-md-6 col-sm-12 chart-box">
+       {/* Scatter Plot - Flight Duration vs Amount Paid */}
+<div className="col-md-6 col-sm-12 chart-box bubble-chart">
     <Bubble 
         data={{
             datasets: [{
@@ -220,26 +243,19 @@ const AnalyticsConsumer = ({ email }) => {
                 backgroundColor: [
                     "rgba(255, 99, 132, 0.6)",
                     "rgba(54, 162, 235, 0.6)",
-                    "rgba(255, 206, 86, 0.6)",
-                    "rgba(75, 192, 192, 0.6)",
-                    "rgba(153, 102, 255, 0.6)",
-                    "rgba(255, 159, 64, 0.6)"
+                    "rgba(255, 206, 86, 0.6)"
                 ],
                 borderColor: "rgba(75, 192, 192, 1)",
                 borderWidth: 1
             }]
         }}
         options={{
-            scales: {
-                x: { title: { display: true, text: "Flight Duration (Minutes)" } },
-                y: { title: { display: true, text: "Amount Paid ($)" } }
-            },
-            plugins: {
-                legend: { display: true }
-            }
+            responsive: true,
+            maintainAspectRatio: false
         }}
     />
 </div>
+
 
 
         {/* Doughnut Chart - Seat Class Distribution */}
