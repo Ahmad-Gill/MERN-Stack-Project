@@ -1,5 +1,15 @@
 {
   "dependencies": {
     "react-router-dom": "^7.3.0"
-  }
+  },
+  "name": "front_end",
+  "version": "1.0.0",
+  "devDependencies": {},
+  "scripts": {
+    "start": "react-scripts start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
