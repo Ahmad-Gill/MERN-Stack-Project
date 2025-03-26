@@ -5,11 +5,14 @@ import { useUser } from "../componentsHtmlFIles/UserContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { updateUserProfile } from "../componentsHtmlFIles/customizeProfile_submit"; 
 import Popup from "../componentsHtmlFIles/Popup";
+import PlaneLoading from "../componentsHtmlFIles/PlaneLoading";   // for ANimation
 
 
 const CustomizeProfile = () => {
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
   const [popupType, setPopupType] = useState(null);
+  const [data, setData] = useState(null);
   const [countries, setCountries] = useState([]);
     const [loading, setLoading] = useState(false);
   const [popupMessage, setPopupMessage] = useState(null);
@@ -104,7 +107,7 @@ const CustomizeProfile = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setIsLoading(true); // Show loading animation // Simulate data fetching 
   
     const userData = {
       email, profileImage, name, phone, address, dob, gender, country, language, paymentMethod,
@@ -124,7 +127,7 @@ const CustomizeProfile = () => {
           setPopupMessage(response.message || "Something went wrong.");
           setPopupType("error");
         }
-        setLoading(false);
+        setIsLoading(false);
       }, 2000);
   
     } catch (error) {
@@ -137,8 +140,10 @@ const CustomizeProfile = () => {
   };
 
   
-  return (
+  return  (
     <>
+   
+     {isLoading && <PlaneLoading isLoading={isLoading} />}         {/* For ANimation */}
 <div className="profile-container">
       <h1>Customize Your Profile</h1>
       <div className="row">
@@ -381,11 +386,7 @@ const CustomizeProfile = () => {
         <button type="submit"disabled={phoneError} className="profile-form__button">Save Changes</button>
       </form>
     </div>
-    {loading && (
-      <div className="loading-overlay">
-        <div className="spinner"></div>
-      </div>
-    )}
+  
     </>
   );
   

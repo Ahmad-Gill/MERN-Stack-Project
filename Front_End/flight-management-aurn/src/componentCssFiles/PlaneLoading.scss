@@ -1,0 +1,25 @@
+.plane-loading-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.9);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+
+    .plane-animation {
+        width: 150px;  // Adjust size
+        height: 150px;
+    }
+    
+    @media (max-width: 768px) {
+        .plane-animation {
+            width: 100px;  // Smaller on mobile
+            height: 100px;
+        }
+    }
+}

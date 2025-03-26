@@ -6,6 +6,14 @@ import FaqFetcher from '../componentsHtmlFIles/FaqFetcher';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa'; 
 import Popup from "../componentsHtmlFIles/Popup";
 import { useNavigate } from "react-router-dom";
+import PlaneLoading from "../componentsHtmlFIles/PlaneLoading";   // for ANimation
+
+
+
+import { useSelector, useDispatch } from "react-redux";
+import { setName, setEmail, setActiveStatus, setCustomerStatus, setProviderStatus, resetUser } from "../store";
+
+
 const countries = {
   "USA": { lat: 37.0902, lon: -95.7129 },
   "Canada": { lat: 56.1304, lon: -106.3468 },
@@ -45,7 +53,10 @@ const haversineDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 function Home() {
+  const user = useSelector((state) => state.user);       //REdux comands
+  const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
 
+  const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
   const { reviews, loading, error } = useFetchReviews();
   const navigate = useNavigate();
   const [passengers, setPassengers] = useState(1);
@@ -59,30 +70,52 @@ function Home() {
     const [popupMessage, setPopupMessage] = useState(null);
   const [jetImages, setJetImages] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
-
-  const calculatePrice = () => {
-    if (departure === destination) {  
-        setPopupMessage("Departure and destination cannot be the same..");
+  const handleClick = () => {
+    if (!isActive) {
+        setPopupMessage("Please log in first!");
         setPopupType("error");
         return;
     }
-
-    const depCoords = countries[departure];
-    const destCoords = countries[destination];
-
-    if (!depCoords || !destCoords) {
-          setPopupMessage("Invalid locations selected.");
-          setPopupType("error");
-        return;
+    if (isCustomer) {
+        navigate("#"); // Replace with the actual route
+    } else if (isProvider) {
+        navigate("#"); // Replace with the actual route
+    } else {
+      setPopupMessage("You are an Admin. You can't book anything.");
+      setPopupType("error");
     }
+};
+const calculatePrice = () => {
+  setIsLoading(true); // Show loading animation 
 
-    const dist = haversineDistance(depCoords.lat, depCoords.lon, destCoords.lat, destCoords.lon);
-    setDistance(dist);
+  if (departure === destination) {  
+      setPopupMessage("Departure and destination cannot be the same.");
+      setPopupType("error");
+      setTimeout(() => setIsLoading(false), 1000); // Hide loading after 1 second
+      return;
+  }
 
-    const basePricePerPerson = (dist / 5) * 100;
-    const totalPrice = basePricePerPerson * passengers;
+  const depCoords = countries[departure];
+  const destCoords = countries[destination];
 
-    setPrice(totalPrice);
+  if (!depCoords || !destCoords) {
+      setPopupMessage("Invalid locations selected.");
+      setPopupType("error");
+      setTimeout(() => setIsLoading(false), 1000); // Hide loading after 1 second
+      return;
+  }
+
+  // Simulate data fetching delay
+  setTimeout(() => {
+      const dist = haversineDistance(depCoords.lat, depCoords.lon, destCoords.lat, destCoords.lon);
+      setDistance(dist);
+
+      const basePricePerPerson = (dist / 5) * 100;
+      const totalPrice = basePricePerPerson * passengers;
+
+      setPrice(totalPrice);
+      setIsLoading(false); // Hide loading animation after processing
+  }, 1500); // Simulate 1.5s delay for calculation
 };
 
 
@@ -128,6 +161,7 @@ function Home() {
   }, []);
   return (
     <>
+      {isLoading && <PlaneLoading isLoading={isLoading} />}         {/* For ANimation */}
 
           {/*--------------------------------- Hero Section---------------- */}
   <div className="home-container">
@@ -139,9 +173,18 @@ function Home() {
           </video>
         </div>
         <div className="hero-text">
+  
           <h1>Experience Luxury in the Sky</h1>
-          <p>Book or List Your Private Jet Seamlessly</p>
-          <button className="cta-button">Book Now</button>
+<p>
+    {isCustomer ? "Book Your Private Jet Seamlessly" : 
+    isProvider ? "List Your Private Jet with Ease" : 
+    "Manage and Oversee Bookings as an Admin"}
+</p>
+
+          <button className="cta-button" onClick={handleClick} disabled={!isActive}>
+    {isActive ? (isCustomer ? "Book Now" : isProvider ? "Add Listing" : "Manage") : "Disabled"}
+</button>
+
         </div>
       </div>
 

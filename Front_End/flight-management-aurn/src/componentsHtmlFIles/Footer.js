@@ -2,24 +2,26 @@ import React, { useState } from "react";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa"; 
 import "../componentCssFiles/footer.scss"; 
 import Popup from "../componentsHtmlFIles/Popup";
+import PlaneLoading from "../componentsHtmlFIles/PlaneLoading";   // for ANimation
 
 function Footer() {
   const [email, setEmail] = useState("");
   const [popupMessage, setPopupMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [popupType, setPopupType] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true); // Show loading animation // Simulate data fetching 
     setPopupMessage(""); 
     setPopupType(""); 
-    setLoading(true); 
 
     setTimeout(() => {
-        setLoading(false); 
         setPopupMessage(`Thank you! We will keep in touch at: ${email}`);
         setPopupType("success");
         setEmail(""); 
+        setIsLoading(false);
     }, 2000); 
 };
 
@@ -27,6 +29,7 @@ function Footer() {
 
   return (
     <>
+    {isLoading && <PlaneLoading isLoading={isLoading} />}         {/* For ANimation */}
     <footer className="footer">
       <div className="footerContainer">
         {/* Left - Social Links */}

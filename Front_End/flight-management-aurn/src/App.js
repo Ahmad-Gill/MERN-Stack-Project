@@ -12,40 +12,44 @@ import Footer from "./componentsHtmlFIles/Footer";
 import Log_in from "./componentsHtmlFIles/LogIn";
 import SupportChat from "./componentsHtmlFIles/SupportChat.js";
 import JetTypes from "./componentsHtmlFIles/JetTypes";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
-const AppContent = () => {
-  useEffect(() => {
-    document.title = "Aurn کھٹولا ";
-  }, []);
-
+const Layout = () => {
   const location = useLocation();
-  const paths = ["/", "/LogIn"]; // Hide navbar on these paths
+  const paths = ["/", "/LogIn"]; // Hide navbar & footer on these paths
 
   return (
     <>
       {!paths.includes(location.pathname) && <NavBar />}
       <Routes>
-          <Route path = "/" element = {<Sign_up />} />
-          <Route path = "/LogIn" element = {<Log_in />} />
-          <Route path="/Home" element={<Home />} />
-          <Route path="/customizeProfile" element={<CustomizeProfile />} />
-          <Route path="/Analytics_consumer" element={<Analytics_consumer  email="m.ahmadgill01@gmail.com"/>} />
-          <Route path="/jet-types" element={<JetTypes />} />
-        </Routes>
-        <SupportChat />
+        <Route path="/" element={<Sign_up />} />
+        <Route path="/LogIn" element={<Log_in />} />
+        <Route path="/Home" element={<Home />} />
+        <Route path="/customizeProfile" element={<CustomizeProfile />} />
+        <Route path="/Analytics_consumer" element={<Analytics_consumer email="m.ahmadgill01@gmail.com"/>} />
+        <Route path="/jet-types" element={<JetTypes />} />
+      </Routes>
+      <SupportChat />
       {!paths.includes(location.pathname) && <Footer />}
     </>
   );
 };
 
-function App() {
+const App = () => {
+  useEffect(() => {
+    document.title = "Aurn کھٹولا";
+  }, []);
+
   return (
-    <UserProvider>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </UserProvider>
+    <Provider store={store}>
+      <UserProvider>
+        <BrowserRouter>
+          <Layout />
+        </BrowserRouter>
+      </UserProvider>
+    </Provider>
   );
-}
+};
 
 export default App;

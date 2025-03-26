@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { fetchConsumerHistory } from "../componentsHtmlFIles/Analytics_consumer_Get";
 import { Bar, Line, Pie, Scatter, Doughnut, Radar,Bubble , PolarArea } from "react-chartjs-2";
+import { useSelector, useDispatch } from "react-redux";
+import PlaneLoading from "../componentsHtmlFIles/PlaneLoading";   // for ANimation
+import { setName, setEmail, setActiveStatus, setCustomerStatus, setProviderStatus, resetUser } from "../store";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Tooltip, Legend, RadialLinearScale } from "chart.js";
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, 
@@ -8,10 +11,14 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import "../componentCssFiles/analytics_consuer.scss";
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Tooltip, Legend, RadialLinearScale);
 
 const AnalyticsConsumer = ({ email }) => {
     const [data, setData] = useState([]);
+      const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
+      const user = useSelector((state) => state.user);       //REdux comands
+      const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
     const [filteredData, setFilteredData] = useState([]);
     const [filters, setFilters] = useState({});
     const [uniqueOptions, setUniqueOptions] = useState({});
@@ -60,6 +67,7 @@ const AnalyticsConsumer = ({ email }) => {
 
 
     useEffect(() => {
+        setIsLoading(true); // Show loading animation // Simulate data fetching 
         fetchConsumerHistory(email).then((res) => {
             setData(res);
             setFilteredData(res);
@@ -72,10 +80,12 @@ const AnalyticsConsumer = ({ email }) => {
             const options = keys.reduce((acc, key) => {
                 acc[key] = extractUniqueValues(key);
                 return acc;
+                setIsLoading(false);
             }, {});
             
             setUniqueOptions(options);
             setFilters(keys.reduce((acc, key) => ({ ...acc, [key]: "All" }), {}));
+            setIsLoading(false);
         });
     }, [email]);
 
@@ -98,8 +108,11 @@ const AnalyticsConsumer = ({ email }) => {
     useEffect(filterData, [filters, data]);
 
     return (
+            <>
+           
+             {isLoading && <PlaneLoading isLoading={isLoading} />}         {/* For ANimation */}
         <div className="analytics-container">
-            <h1>Analytics for {email}</h1>
+            <h1>Analytics for {user.name}</h1>
             <div className="filter-button-container" onClick={() => setDrawerOpen(true)}>
                 <span>Filter</span>
                 <IconButton>
@@ -300,6 +313,7 @@ const AnalyticsConsumer = ({ email }) => {
 </div>
 
         </div>
+        </>
     );
 };
 

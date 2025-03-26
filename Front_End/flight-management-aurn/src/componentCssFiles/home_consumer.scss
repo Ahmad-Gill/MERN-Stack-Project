@@ -83,6 +83,10 @@ html, body {
       &:hover {
         background: $hover;
       }
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
     }
   }
   

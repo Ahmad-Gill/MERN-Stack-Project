@@ -3,7 +3,7 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background:  #0000FF;
+    background: #0000FF;
     color: white;
     width: 50px;
     height: 50px;
@@ -36,8 +36,7 @@
 
 /* Chat Header */
 .chat-header {
-    background:  #0000FF;
-    color: white;
+    color: black;
     padding: 10px;
     display: flex;
     justify-content: space-between;
@@ -45,9 +44,48 @@
     font-weight: bold;
 }
 
+.chat-title {
+    flex-grow: 1;  /* Pushes the title to the left */
+}
+
 .close-btn {
     cursor: pointer;
+    color: black;
+    background: none;
+    border: none;
+    font-size: 18px;
 }
+.chat-icon {
+    cursor: pointer; // Default when active
+}
+
+.chat-icon.disabled {
+    opacity: 0.5; // Looks inactive
+    pointer-events: none; // Prevent clicks
+    cursor: not-allowed !important; // Ensures disabled cursor
+    user-select: none; // Prevents text selection (optional)
+}
+
+.send-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn {
+    cursor: pointer;
+    text-align: right;
+    color: black;
+    background-color: none !important;
+    border: none;
+    padding: 5px;
+}
+
 
 /* Chat Body */
 .chat-body {
@@ -58,17 +96,31 @@
     flex-direction: column;
 }
 
+/* Chat Messages */
 .chat-message {
     padding: 8px;
     margin: 5px 0;
     border-radius: 8px;
     max-width: 80%;
+    word-wrap: break-word;
+    word-break: break-word; /* Ensures long messages wrap to the next line */
+    white-space: pre-wrap;  /* Preserves spaces and breaks */
 }
 
+/* User Messages - Right Align */
 .chat-message.user {
-    background:  #0000FF;
+    background: #0000FF;
     color: white;
     align-self: flex-end;
+    text-align: right;
+}
+
+/* Bot Messages - Left Align */
+.chat-message.bot {
+    background: #f1f1f1;
+    color: black;
+    align-self: flex-start;
+    text-align: left;
 }
 
 /* Chat Footer */
@@ -99,4 +151,16 @@
 
 .chat-footer button:hover {
     background: #0000FF;
+}
+
+/* Smooth Fade Animation */
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
 }
