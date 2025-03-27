@@ -16,23 +16,23 @@ function Log_in(){
    
    function handle_Submission(event){
     event.preventDefault();
-    navigate('/Home');
+    navigate('/');
    }
 
    return (
-    <div className = "container">
-      <img src="/favicon.ico" alt="Logo" />
+    <div className = "login_page">
+      <img id = "logo" src="/favicon.ico" alt="Logo" />
       <form id ="form" onSubmit = {handle_Submission}>
-        <h1>Log In</h1>
+        <h1 id = "login_head">Log In</h1>
 
         {/*E-mail*/}
-        <label for = "Email_Id">E-mail         </label>
-        <input type = "email" name = "Email_Id" value = {logInData.Email_Id} required onChange = {handle_Change} />
+        <label id = "label_login" for = "Email_Id">E-mail         </label>
+        <input id = "login_input" type = "email" name = "Email_Id" value = {logInData.Email_Id} required onChange = {handle_Change} />
 
         <br></br>
         {/*Password*/}
-        <label for = "Password">Password</label>
-        <input type = "password" name = "Password" value = {logInData.Password} onChange = {handle_Change} placeholder = "Atleast 8 characters" minLength = "8" required/>
+        <label for = "Password" id = "label_login">Password</label>
+        <input type = "password" id = "login_input" name = "Password" value = {logInData.Password} onChange = {handle_Change} placeholder = "Atleast 8 characters" minLength = "8" required/>
          
         <br></br>
 

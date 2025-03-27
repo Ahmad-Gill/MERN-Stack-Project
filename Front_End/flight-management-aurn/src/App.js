@@ -20,13 +20,13 @@ import AdminDashboard from "./componentsHtmlFIles/adminProfile";
 
 const Layout = () => {
   const location = useLocation();
-  const paths = ["/signup", "/LogIn"]; // Hide navbar & footer on these paths
+  const paths = ["/SignUp", "/LogIn"]; // Hide navbar & footer on these paths
 
   return (
     <>
       {!paths.includes(location.pathname) && <NavBar />}
       <Routes>
-        <Route path="/signup" element={<Sign_up />} />
+        <Route path="/SignUp" element={<Sign_up />} />
         <Route path="/LogIn" element={<Log_in />} />
         <Route path="/" element={<Home />} />
         <Route path="/consumerProfile" element={<CustomizeProfile />} />
