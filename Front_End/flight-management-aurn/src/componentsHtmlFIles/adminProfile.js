@@ -1,14 +1,16 @@
 import { useState,useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "../componentCssFiles/customizeProfile.scss";
-import { useUser } from "../componentsHtmlFIles/UserContext";
+import { useUser } from "./UserContext";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { updateUserProfile } from "../componentsHtmlFIles/customizeProfile_submit"; 
-import Popup from "../componentsHtmlFIles/Popup";
-import PlaneLoading from "../componentsHtmlFIles/PlaneLoading";   // for ANimation
+import { updateUserProfile } from "./customizeProfile_submit"; 
+import Popup from "./Popup";
+import PlaneLoading from "./PlaneLoading";   // for ANimation
 
 
-const CustomizeProfile = () => {
+const AdminDashboard = () => {
+
+
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
   const [popupType, setPopupType] = useState(null);
@@ -145,7 +147,7 @@ const CustomizeProfile = () => {
    
      {isLoading && <PlaneLoading isLoading={isLoading} />}         {/* For ANimation */}
 <div className="profile-container">
-      <h1>Customize Your Profile as Customer</h1>
+      <h1>Customize Your Profile as a Admin</h1>
       <div className="row">
         <div className="col-md-12">
           <div className="image-preview">
@@ -286,11 +288,11 @@ const CustomizeProfile = () => {
 </div>
 
   
-        {/* Payment Information */}
+        {/* Payment Information
         <h3 className="profile-form__section-title">Payment Information</h3>
 
 <div className="container mt-3">
-  {/* Payment Method Selection */}
+  {/* Payment Method Selection 
   <div className="row">
     <div className="col-md-12 col-sm-12 mb-3">
       <label className="form-label">Select Payment Method</label>
@@ -308,7 +310,7 @@ const CustomizeProfile = () => {
     </div>
   </div>
 
-  {/* Credit/Debit Card Section */}
+  {/* Credit/Debit Card Section 
   {paymentMethod === "card" && (
     <>
       <div className="row">
@@ -332,7 +334,7 @@ const CustomizeProfile = () => {
     </>
   )}
 
-  {/* PayPal Section */}
+  {/* PayPal Section 
   {paymentMethod === "paypal" && (
     <div className="row">
       <div className="col-md-12 col-sm-12 mb-3">
@@ -342,7 +344,7 @@ const CustomizeProfile = () => {
     </div>
   )}
 
-  {/* Bank Transfer Section */}
+  {/* Bank Transfer Section 
   {paymentMethod === "bank" && (
     <>
       <div className="row">
@@ -366,10 +368,10 @@ const CustomizeProfile = () => {
       </div>
     </>
   )}
-</div>
+</div> */}
 
 
-  
+  <br />
 {popupMessage && (
   <Popup 
     message={popupMessage} 
@@ -394,4 +396,4 @@ const CustomizeProfile = () => {
 };
 
 
-export default CustomizeProfile;
+export default AdminDashboard;

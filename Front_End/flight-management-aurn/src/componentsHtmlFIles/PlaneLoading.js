@@ -6,7 +6,7 @@ const PlaneLoading = ({ isLoading }) => {
     const [animationData, setAnimationData] = useState(null);
 
     useEffect(() => {
-        fetch("/3.json") // Load from public folder
+        fetch("/2.json") // Load from public folder
             .then((response) => response.json())
             .then((data) => setAnimationData(data))
             .catch((error) => console.error("Error loading animation:", error));

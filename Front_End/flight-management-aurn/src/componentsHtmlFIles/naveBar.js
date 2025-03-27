@@ -5,7 +5,14 @@ import { Link, useNavigate } from "react-router-dom";
 import Notifications from "../componentsHtmlFIles/Notifications"; 
 import fetchData from "../componentsHtmlFIles/SearchPage"; 
 import { useUser } from "../componentsHtmlFIles//UserContext";
+import { setName, setEmail, setActiveStatus, setCustomerStatus, setProviderStatus, resetUser } from "../store";
+import { useSelector, useDispatch } from "react-redux";
+
 function NveBar() {
+    const user = useSelector((state) => state.user);       //REdux comands
+  
+    const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
+  
   const [search, setSearch] = useState("");
   const { profileImage } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -86,7 +93,13 @@ function NveBar() {
       {/* NAVIGATION LINKS */}
           <div className={`nav-links ${menuOpen ? "open" : ""}`}>
             <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
-            <Link to="/Analytics_consumer" onClick={() => setMenuOpen(false)}>Analytics</Link>
+            {isCustomer && isActive && (
+  <Link to="/Analytics_consumer" onClick={() => setMenuOpen(false)}>
+    Analytics
+  </Link>
+)}
+            <Link to="/LogIn" onClick={() => setMenuOpen(false)}>LogIn</Link>
+
           </div>
       {/* Search COntainer */}
           <div className="search-container" ref={searchRef}>
@@ -125,9 +138,21 @@ function NveBar() {
               {menuOpen ? <FaTimes /> : <FaBars />}
             </button>
       {/* User Profile  */}
-      <button className="profile-btn" onClick={() => navigate("/customizeProfile", { state: { email: "m.ahmadgill01@gmai.com" } })}>
-      {profileImage && <img src={profileImage} alt="Profile Preview" className="profile-preview" />}
-      </button>
+      <button 
+  className="profile-btn" 
+  onClick={() => {
+    if (isActive && isCustomer ) {
+      navigate("/consumerProfile", { state: { email: "m.ahmadgill01@gmai.com" } });
+    } else if (isActive && isProvider) {
+      navigate("/providerProfile", { state: { email: "m.ahmadgill01@gmai.com" } });
+    } else if (isActive && !isProvider && !isCustomer) {
+      navigate("/adminProfile", { state: { email: "m.ahmadgill01@gmai.com" } });
+    }
+  }}
+>
+  {profileImage && <img src={profileImage} alt="Profile Preview" className="profile-preview" />}
+</button>
+
     </div>
   );
 }

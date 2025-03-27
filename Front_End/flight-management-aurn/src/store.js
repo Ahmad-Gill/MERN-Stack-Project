@@ -3,8 +3,8 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 const initialState = {
     name: "Muhammad Ahmad",
     email: "m.ahmadgill01@gmail.com",
-    isActive: false,
-    isCustomer: false,
+    isActive: true,
+    isCustomer: true,
     isProvider: false,
 };
 

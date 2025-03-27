@@ -7,8 +7,7 @@ import { updateUserProfile } from "../componentsHtmlFIles/customizeProfile_submi
 import Popup from "../componentsHtmlFIles/Popup";
 import PlaneLoading from "../componentsHtmlFIles/PlaneLoading";   // for ANimation
 
-
-const CustomizeProfile = () => {
+const ProviderProfile = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
   const [popupType, setPopupType] = useState(null);
@@ -145,7 +144,7 @@ const CustomizeProfile = () => {
    
      {isLoading && <PlaneLoading isLoading={isLoading} />}         {/* For ANimation */}
 <div className="profile-container">
-      <h1>Customize Your Profile as Customer</h1>
+      <h1> Customize Your Profile as Provider</h1>
       <div className="row">
         <div className="col-md-12">
           <div className="image-preview">
@@ -394,4 +393,4 @@ const CustomizeProfile = () => {
 };
 
 
-export default CustomizeProfile;
+export default ProviderProfile;
