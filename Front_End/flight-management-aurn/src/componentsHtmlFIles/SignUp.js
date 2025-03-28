@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useSwipeable } from "react-swipeable";
 import "../componentCssFiles/SignUp.scss";
 
 function Sign_up(){
    const navigate = useNavigate();
+
+   const [error,setError] = useState("");
    const [signUpData , setSignUpData] = useState({
      full_name : '',
      password: '',
@@ -12,19 +13,23 @@ function Sign_up(){
      cnfrm_pass: '',
      prov_cus: ''       //Choosing b/w provider and customer
    });
-
-  const handlers = useSwipeable({
-    onSwipedLeft: () => navigate('/LogIn')
-    });
+    
    function handle_Change(event){
     const {name , value} = event.target;
     setSignUpData({...signUpData , [name]: value});
+    setError("");
    }
    
    function handle_Submission(event){
     event.preventDefault();
-   // setSignUpData(signUpData);
-    //console.log(signUpData);
+    if (signUpData.password !== signUpData.cnfrm_pass){
+      setError("Error!!! Password and Confirm Password Should be the Same");
+      setSignUpData((prevData) => ({
+        ...prevData, password: '' , cnfrm_pass: ''
+      }));
+      return;
+    }
+    setError("");
     navigate('/LogIn');
    }
 
@@ -51,6 +56,8 @@ function Sign_up(){
         {/*Confirm Password*/}
         <label for = "cnfrm_pass" id = "label_signup">Confirm Password</label>
         <input id = "signup_input" type = "password" name = "cnfrm_pass" value = {signUpData.cnfrm_pass} onChange = {handle_Change} placeholder = "Re-Write Your Password " minLength = "8" required/>
+
+        {error && <p id = "ErrorMSG" style={{ color: "red", fontSize: "14px" }}>{error}</p>}
 
         <br></br>
         {/*Selection b/w Provider and Customer*/}
