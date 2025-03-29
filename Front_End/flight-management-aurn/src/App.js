@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./componentsHtmlFIles/home";
 import NavBar from "./componentsHtmlFIles/naveBar";
 import Analytics_consumer from "./componentsHtmlFIles/Analytics_consumer";
+import Analytics_provider from "./componentsHtmlFIles/Analytics_provider";
 import CustomizeProfile from "./componentsHtmlFIles/customizeProfile";
 import Sign_up from "./componentsHtmlFIles/SignUp";  
 import { UserProvider } from "./componentsHtmlFIles/UserContext";
@@ -17,6 +18,7 @@ import { store } from "./store";
 import ProviderProfile from "./componentsHtmlFIles/providerProfile";
 import AdminDashboard from "./componentsHtmlFIles/adminProfile";
 import UpcomingFlights from "./componentsHtmlFIles/UpcomingFlights";
+import UpcomingFlights_provider from "./componentsHtmlFIles/UpcomingFlights_provider";
 import AuthContainer from "./componentsHtmlFIles/AuthContainer";
 
 
@@ -36,7 +38,9 @@ const Layout = () => {
         <Route path="/adminProfile" element={<AdminDashboard />} />
         <Route path="/providerProfile" element={<ProviderProfile />} />
         <Route path="/Analytics_consumer" element={<Analytics_consumer email="m.ahmadgill01@gmail.com"/>} />
+        <Route path="/Analytics_provider" element={<Analytics_provider email="m.ahmadgill01@gmail.com"/>} />
         <Route path="/flights" element={<UpcomingFlights />} />
+        <Route path="/UpcomingFlights_provider" element={<UpcomingFlights_provider />} />
         <Route path="/jet-types" element={<JetTypes />} />
       </Routes>
       {!paths.includes(location.pathname.toLowerCase()) &&<SupportChat />}

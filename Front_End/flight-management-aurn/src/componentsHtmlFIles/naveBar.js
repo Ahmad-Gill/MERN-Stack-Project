@@ -99,6 +99,18 @@ function NveBar() {
     Analytics
   </Link>
 )}
+ {isProvider && isActive && (
+  <Link to="/Analytics_provider" onClick={() => setMenuOpen(false)}>
+    Analytics
+  </Link>
+)}
+ {isProvider && isActive && (
+  <Link to="/UpcomingFlights_provider" onClick={() => setMenuOpen(false)}>
+    Flights
+  </Link>
+)}
+
+
 {isCustomer && isActive && (
   <Link to="/flights" onClick={() => setMenuOpen(false)}>Flights</Link>
 )}

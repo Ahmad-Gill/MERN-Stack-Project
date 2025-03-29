@@ -39,7 +39,7 @@ function Sign_up(){
           dispatch(setActiveStatus(true));
           dispatch(setCustomerStatus(signUpData.prov_cus === "Customer"));
           dispatch(setProviderStatus(signUpData.prov_cus === "Provider"));
-    navigate('/LogIn');
+    navigate('/');
    }
 
    return (
