@@ -9,6 +9,7 @@ import { setName, setEmail, setActiveStatus, setCustomerStatus, setProviderStatu
 import { useSelector, useDispatch } from "react-redux";
 
 function NveBar() {
+  const dispatch = useDispatch();
     const user = useSelector((state) => state.user);       //REdux comands
   
     const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
@@ -98,7 +99,25 @@ function NveBar() {
     Analytics
   </Link>
 )}
-            <Link to="/SignUp" onClick={() => setMenuOpen(false)}>SignUp/LogIn</Link>
+{isCustomer && isActive && (
+  <Link to="/flights" onClick={() => setMenuOpen(false)}>Flights</Link>
+)}
+
+
+{isActive ? (
+  <Link
+  to="/"
+  onClick={() => {
+      dispatch(resetUser()); 
+      setMenuOpen(false);
+  }}
+>
+  LogOut
+</Link>
+) : (
+  <Link to="/auth" onClick={() => setMenuOpen(false)}>LogIn</Link>
+)}
+
 
           </div>
       {/* Search COntainer */}

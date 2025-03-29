@@ -46,10 +46,10 @@ $TextColor: black;
 
 .filter-container {
     padding: 20px;
+    margin-top: 700px!important;
     width: 350px;
     display: flex;
     flex-direction: column;
-    background-color: #ddd!important;
     color: black !important;
     gap: 15px;
     border-radius: 12px;
@@ -60,28 +60,34 @@ $TextColor: black;
 
 .filter-container h3 {
     font-size: 1.5rem;
-    background-color: #ddd!important;
     font-weight: bold;
     text-align: center;
     color: black !important;
+    margin-bottom: 10px;
 }
 
 .filter-container div {
     display: flex;
-    margin-top: 90px;
     flex-direction: column;
-    color: black !important;
+    align-items: flex-start;
     gap: 8px;
     width: 100%;
-    background-color: #ddd!important;
+    padding: 5px 0;
 }
 
 .filter-container label {
     font-size: 1rem;
     font-weight: 600;
-    background-color: #ddd!important;
     color: black !important;
 }
+
+.filter-container .MuiSelect-root {
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 8px 12px !important;
+    font-size: 1rem !important;
+}
+
 
 .MuiFormControl-root,
 .MuiSelect-root,

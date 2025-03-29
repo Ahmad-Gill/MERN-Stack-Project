@@ -16,27 +16,31 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import ProviderProfile from "./componentsHtmlFIles/providerProfile";
 import AdminDashboard from "./componentsHtmlFIles/adminProfile";
+import UpcomingFlights from "./componentsHtmlFIles/UpcomingFlights";
+import AuthContainer from "./componentsHtmlFIles/AuthContainer";
 
 
 const Layout = () => {
   const location = useLocation();
-  const paths = ["/SignUp", "/LogIn"]; // Hide navbar & footer on these paths
+  const paths = ["/signup", "/login", "/auth"]; // Hide navbar , footer,live chat on these paths
 
   return (
     <>
-      {!paths.includes(location.pathname) && <NavBar />}
+      {!paths.includes(location.pathname.toLowerCase()) && <NavBar />}
       <Routes>
         <Route path="/SignUp" element={<Sign_up />} />
         <Route path="/LogIn" element={<Log_in />} />
         <Route path="/" element={<Home />} />
+        <Route path="/auth" element={<AuthContainer />} />
         <Route path="/consumerProfile" element={<CustomizeProfile />} />
         <Route path="/adminProfile" element={<AdminDashboard />} />
         <Route path="/providerProfile" element={<ProviderProfile />} />
         <Route path="/Analytics_consumer" element={<Analytics_consumer email="m.ahmadgill01@gmail.com"/>} />
+        <Route path="/flights" element={<UpcomingFlights />} />
         <Route path="/jet-types" element={<JetTypes />} />
       </Routes>
-      <SupportChat />
-      {!paths.includes(location.pathname) && <Footer />}
+      {!paths.includes(location.pathname.toLowerCase()) &&<SupportChat />}
+      {!paths.includes(location.pathname.toLowerCase()) && <Footer />}
     </>
   );
 };
