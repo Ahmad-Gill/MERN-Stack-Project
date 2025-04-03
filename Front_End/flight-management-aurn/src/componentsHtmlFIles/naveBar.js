@@ -98,7 +98,7 @@ function NveBar() {
     Analytics
   </Link>
 )}
-            <Link to="/SignUp" onClick={() => setMenuOpen(false)}>SignUp/LogIn</Link>
+            <Link to="/LogIn" onClick={() => setMenuOpen(false)}>LogIn</Link>
 
           </div>
       {/* Search COntainer */}
