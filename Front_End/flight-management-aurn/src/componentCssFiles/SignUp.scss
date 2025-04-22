@@ -68,3 +68,82 @@ $primaryColor: darkblue;
 #submit_button:hover {
     background-color: darken($primaryColor, 10%);
 }
+
+
+@media screen and (max-width: 768px) {
+    $backgroundColor: white;
+    $primaryColor: darkblue;
+
+    .signup_container {
+        width: 90%;
+        margin: 50px auto; // Ensure space from the top
+        padding: 25px 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding-bottom: 20px;
+        text-align: center;
+        position: relative;
+    }
+
+    #logo {
+        display: block;
+        margin: 0 auto;
+        height: 60px; // Ensure proper size
+        max-width: 80%;
+        margin-bottom: 20px; // Add more space below logo
+    }
+
+    #head_signup {
+        margin-top: 10px; // Ensure space after logo
+        padding-bottom: 10px;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    #GoTologin {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    #GoTologin:hover {
+        color: blue;
+    }
+
+    #label_signup {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    #signup_input, #cus_prov {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    #submit_button {
+        display: block;
+        width: 100%;
+        background-color: $primaryColor;
+        color: white !important;
+        padding: 8px;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        border: none;
+        transition: background 0.3s ease;
+    }
+
+    #submit_button:hover {
+        background-color: darken($primaryColor, 10%);
+    }
+}

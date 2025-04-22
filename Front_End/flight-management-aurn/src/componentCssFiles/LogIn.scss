@@ -58,3 +58,68 @@ $primaryColor: darkblue;
 #login_button:hover {
     background-color: darken($primaryColor, 10%);
 }
+@media screen and (max-width: 768px) {
+    .login_page {
+        width: 90%;
+        margin: auto;
+        padding: 15px;
+        margin-top: 30px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding-bottom: 20px;
+        position: relative;
+        overflow: hidden; /* Ensures no content overflows */
+    }
+
+    #login_head {
+        margin-top: 15px;
+        padding-bottom: 8px;
+        text-align: center;
+        font-size: 20px;
+    }
+
+    #logo {
+        display: block;
+        margin: 0 auto;
+        height: 40px; /* Reduced height */
+        max-width: 80%; /* Ensures it doesn’t exceed the div width */
+        padding-left: 10px;
+        margin-top: 10px; /* Adds space from the top */
+    }
+
+    #label_login {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    #login_input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+
+    #login_button {
+        display: block;
+        width: 100%;
+        background-color: darkblue;
+        color: white !important;
+        padding: 8px;
+        border-radius: 6px;
+        text-align: center;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+        border: none;
+        transition: background 0.3s ease;
+    }
+
+    #login_button:hover {
+        background-color: #00008b; /* Darker shade of darkblue */
+    }
+}

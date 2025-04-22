@@ -90,7 +90,7 @@ useEffect(() => {
     }
   }}
 >
-  <FontAwesomeIcon icon={faMessage} size="1.9x" />
+  <FontAwesomeIcon icon={faMessage} size="lg" />
 </div>
 
 

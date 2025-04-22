@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "../componentCssFiles/SignUp.scss";
+import { useDispatch, useSelector } from "react-redux";
+import {setName,setEmail,setActiveStatus,setCustomerStatus,setProviderStatus,} from "../store";  //Get Data from Store
 
 function Sign_up(){
    const navigate = useNavigate();
+   const dispatch = useDispatch();  
+   const { name, email, isActive } = useSelector((state) => state.user);  // Get Data from store 
 
    const [error,setError] = useState("");
    const [signUpData , setSignUpData] = useState({
@@ -30,22 +34,29 @@ function Sign_up(){
       return;
     }
     setError("");
-    navigate('/LogIn');
+          dispatch(setName(signUpData.full_name));
+          dispatch(setEmail(signUpData.email));
+          dispatch(setActiveStatus(true));
+          dispatch(setCustomerStatus(signUpData.prov_cus === "Customer"));
+          dispatch(setProviderStatus(signUpData.prov_cus === "Provider"));
+    navigate('/');
    }
 
    return (
     <div className = "signup_container" >
       <img id = "logo" src="/favicon.ico" alt="Logo" />
+      <br></br>
+      <br></br>
       <form id ="form" onSubmit = {handle_Submission}>
         <h1 id = "head_signup">Sign Up</h1>
 
         {/*Full Name*/}
         <label id = "label_signup" for = "full_name">Full Name           </label>
-        <input id = "signup_input" type = "text" name = "full_name" value = {signUpData.full_name} required onChange = {handle_Change}/>
+        <input id = "signup_input" type = "text"placeholder="name" name = "full_name" value = {signUpData.full_name} required onChange = {handle_Change}/>
         
         {/*E-mail*/}
         <label for = "Email" id = "label_signup">E-mail         </label>
-        <input id = "signup_input" type = "email" name = "Email" value = {signUpData.Email} required onChange = {handle_Change} />
+        <input id = "signup_input" type = "email" placeholder="Email" name = "Email" value = {signUpData.Email} required onChange = {handle_Change} />
 
         <br></br>
         {/*Password*/}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { fetchConsumerHistory } from "../componentsHtmlFIles/Analytics_consumer_Get";
+import { fetchConsumerHistory } from "./flight_provider_Get";
 import { Bar, Line, Pie, Scatter, Doughnut, Radar,Bubble , PolarArea } from "react-chartjs-2";
 import { useSelector, useDispatch } from "react-redux";
-import PlaneLoading from "../componentsHtmlFIles/PlaneLoading";   // for ANimation
+import PlaneLoading from "./PlaneLoading";   // for ANimation
 import { setName, setEmail, setActiveStatus, setCustomerStatus, setProviderStatus, resetUser } from "../store";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Tooltip, Legend, RadialLinearScale } from "chart.js";
 import {
@@ -10,11 +10,11 @@ import {
     Select, MenuItem, Drawer, Button, IconButton
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import "../componentCssFiles/analytics_consuer.scss";
+import "../componentCssFiles/flight_consuer.scss";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Tooltip, Legend, RadialLinearScale);
 
-const AnalyticsConsumer = ({ email }) => {
+const UpcomingFlights_provider = ({ email="heo" }) => {
     const [data, setData] = useState([]);
       const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
       const user = useSelector((state) => state.user);       //REdux comands
@@ -34,22 +34,20 @@ const AnalyticsConsumer = ({ email }) => {
         }
         return colors;
     };
-    
-
     const airlines = [...new Set(filteredData.map(item => item.airline))];
     const airlineExpenditure = airlines.map(airline => 
         filteredData.filter(item => item.airline === airline)
-                    .reduce((sum, item) => sum + parseFloat(item.amount_paid || 0), 0)
+                    .reduce((sum, item) => sum + parseFloat(item.amount_earn || 0), 0)
     );
 
-    const paymentMethods = [...new Set(filteredData.map(item => item.payment_method))];
+    const paymentMethods = [...new Set(filteredData.map(item => item.Total_seats))];
     const paymentCounts = paymentMethods.map(method => 
-        filteredData.filter(item => item.payment_method === method).length
+        filteredData.filter(item => item.Total_seats === method).length
     );
 
-    const seatClasses = [...new Set(filteredData.map(item => item.seat_class))];
+    const seatClasses = [...new Set(filteredData.map(item => item.flight_type))];
     const seatClassCounts = seatClasses.map(cls => 
-        filteredData.filter(item => item.seat_class === cls).length
+        filteredData.filter(item => item.flight_type === cls).length
     );
 
     const checkInStatuses = [...new Set(filteredData.map(item => item.check_in_status))];
@@ -58,13 +56,13 @@ const AnalyticsConsumer = ({ email }) => {
     );
 
     const dateExpenditure = filteredData.reduce((acc, item) => {
-        acc[item.date] = (acc[item.date] || 0) + parseFloat(item.amount_paid || 0);
+        acc[item.date] = (acc[item.date] || 0) + parseFloat(item.amount_earn || 0);
         return acc;
     }, {});
     
     const flightDurationAmount = filteredData.map(item => ({
         x: parseFloat(item.flight_duration || 0), 
-        y: parseFloat(item.amount_paid || 0)
+        y: parseFloat(item.amount_earn || 0)
     }));
 
 
@@ -76,9 +74,27 @@ const AnalyticsConsumer = ({ email }) => {
             setFilteredData(res);
             
             const extractUniqueValues = (key) => [...new Set(res.map(item => item[key]))];
-            const keys = ["airline", "departure", "destination", "seat_class", "payment_method", 
-                          "baggage_allowance_kg", "gate_number", "terminal", "layover", 
-                          "cancellation_policy", "check_in_status", "loyalty_program"];
+            const keys = [
+                // Flight Information - Light Blue
+               "airline", 
+            
+                // Booking & Payment Details - Light Green
+ "payment_method", "loyalty_program",
+            
+                // Departure & Arrival Information - Light Yellow
+                "date", "departure", "destination", 
+                 "layover",
+            
+                // Passenger Details - Light Pink
+                 "seat_class",  "check_in_status",
+             
+            
+              
+            
+                // Additional Information - Light Gray
+                "missed_status", "cancellation_policy", 
+            ]
+            ;
             
             const options = keys.reduce((acc, key) => {
                 acc[key] = extractUniqueValues(key);
@@ -102,20 +118,29 @@ const AnalyticsConsumer = ({ email }) => {
         setFilteredData(updatedData);
 
         // Calculate total expenditure
-        const total = updatedData.reduce((sum, item) => sum + parseFloat(item.amount_paid || 0), 0);
+        const total = updatedData.reduce((sum, item) => sum + parseFloat(item.amount_earn || 0), 0);
         setTotalExpenditure(total);
 
         setDrawerOpen(false);
     }, [filters, data]);
 
     useEffect(filterData, [filters, data]);
-
+    const handleRefund = (row) => {
+        alert(`Processing refund for ${row.passenger_name} - Flight ${row.flight}`);
+    };
+    const handlePayment = (row) => {
+        console.log("Processing payment for:", row);
+    
+        // Example: Redirect to a payment page or trigger a payment API
+        alert(`Redirecting to payment for flight: ${row.flight}`);
+    };
+    
     return (
             <>
            
              {isLoading && <PlaneLoading isLoading={isLoading} />}         {/* For ANimation */}
         <div className="analytics-container">
-            <h1>Analytics for {user.email}</h1>
+            <h1>Up Coming Flight Details  for {user.email}</h1>
             <div className="filter-button-container" onClick={() => setDrawerOpen(true)}>
                 <span>Filter</span>
                 <IconButton>
@@ -144,50 +169,120 @@ const AnalyticsConsumer = ({ email }) => {
                 <h2>Total Expenditure: ${totalExpenditure.toFixed(2)}</h2>
             </div>
             <TableContainer component={Paper} className="table-container">
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            {[
-                                "Flight", "Airline", "Date", "Departure", "Destination", "Departure Time",
-                                "Arrival Time", "Duration (hrs)", "Status", "Amount Paid ($)",
-                                "Passenger Name", "Seat Class", "Seat Number", "Booking Ref",
-                                "Payment Method", "Baggage (kg)", "Gate", "Terminal", "Layover",
-                                "Cancellation Policy", "Check-in Status", "Loyalty Program"
-                            ].map(header => (
-                                <TableCell key={header} className="table-header">{header}</TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredData.map((row, index) => (
-                            <TableRow  className="data" key={index}>
-                                <TableCell>{row.flight}</TableCell>
-                                <TableCell>{row.airline}</TableCell>
-                                <TableCell>{row.date}</TableCell>
-                                <TableCell>{row.departure}</TableCell>
-                                <TableCell>{row.destination}</TableCell>
-                                <TableCell>{row.departure_time}</TableCell>
-                                <TableCell>{row.arrival_time}</TableCell>
-                                <TableCell>{row.flight_duration}</TableCell>
-                                <TableCell>{row.status}</TableCell>
-                                <TableCell>{row.amount_paid}</TableCell>
-                                <TableCell>{row.passenger_name}</TableCell>
-                                <TableCell>{row.seat_class}</TableCell>
-                                <TableCell>{row.seat_number}</TableCell>
-                                <TableCell>{row.booking_reference}</TableCell>
-                                <TableCell>{row.payment_method}</TableCell>
-                                <TableCell>{row.baggage_allowance_kg}</TableCell>
-                                <TableCell>{row.gate_number}</TableCell>
-                                <TableCell>{row.terminal}</TableCell>
-                                <TableCell>{row.layover}</TableCell>
-                                <TableCell>{row.cancellation_policy}</TableCell>
-                                <TableCell>{row.check_in_status}</TableCell>
-                                <TableCell>{row.loyalty_program}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+    <Table stickyHeader>
+        {/* Table Head */}
+        <TableHead>
+            <TableRow>
+                {[
+                    // Flight Information - Light Blue
+                    { key: "flight", label: "Flight", color: "#D0E8FF" },
+                    { key: "airline", label: "Airline", color: "#D0E8FF" },
+                    { key: "airplane_model", label: "Airplane Model", color: "#D0E8FF" },
+                    { key: "flight_type", label: "Flight Type", color: "#D0E8FF" },
+
+                    // Booking & Payment Details - Light Green
+                    { key: "booking_start_date", label: "booking Start Date", color: "#D4EDDA" },
+                    { key: "amount_earn", label: "Amount Earn", color: "#D4EDDA" },
+
+                    // Departure & Arrival Information - Light Yellow
+                    { key: "date", label: "Flight Date", color: "#FFF3CD" },
+                    { key: "departure", label: "Departure", color: "#FFF3CD" },
+                    { key: "destination", label: "Destination", color: "#FFF3CD" },
+                    { key: "departure_time", label: "Departure Time", color: "#FFF3CD" },
+                    { key: "arrival_time", label: "Arrival Time", color: "#FFF3CD" },
+                    { key: "flight_duration", label: "Flight Duration", color: "#FFF3CD" },
+                    { key: "layover", label: "Layover", color: "#FFF3CD" },
+
+                    // Passenger Details - Light Pink
+                    { key: "Total_seats", label: "Total Seats", color: "#F8D7DA" },
+                    { key: "Seats_booked", label: "Booked Seats", color: "#F8D7DA" },
+                   
+
+                    // Airport & Terminal Information - Light Purple
+                    { key: "terminal", label: "Terminal", color: "#E2D6F9" },
+           
+
+                    // Additional Information - Light Gray
+                    { key: "missed_status", label: "Missed Status", color: "#E9ECEF" },
+                    { key: "cancellation_policy", label: "Cancellation Policy", color: "#E9ECEF" },
+                ].map(({ key, label, color }) => (
+                    <TableCell key={key} sx={{ fontWeight: "bold", backgroundColor: color }}>
+                        {label}
+                    </TableCell>
+                ))}
+            </TableRow>
+        </TableHead>
+
+        {/* Table Body */}
+        <TableBody>
+    {filteredData
+        .sort((a, b) => {
+            // Move "Missed" flights to the bottom
+            if (a.missed_status === "Missed" && b.missed_status !== "Missed") return 1;
+            if (a.missed_status !== "Missed" && b.missed_status === "Missed") return -1;
+
+            // Sort by nearest flight date (earliest first)
+            return new Date(a.flight_date) - new Date(b.flight_date);
+        })
+        .map((row, rowIndex) => {
+            const isAmountZero = row.amount_earn === 0;
+            const isRefundable = row.cancellation_policy === "Refundable" && row.missed_status !== "Missed";
+            const isNonRefundablePaid = row.cancellation_policy === "Non-Refundable" && row.amount_earn > 0;
+
+            return (
+                <TableRow key={rowIndex} sx={{ backgroundColor: isAmountZero ? "#FFCCCC" : "inherit" }}>
+                    {[
+                        { key: "flight", color: "#D0E8FF" },
+                        { key: "airline", color: "#D0E8FF" },
+                        { key: "airplane_model", color: "#D0E8FF" },
+                        { key: "flight_type", color: "#D0E8FF" },
+
+                        { key: "booking_start_date", color: "#D4EDDA" },
+                        { key: "amount_earn", color: "#D4EDDA" },
+
+                        { key: "date", color: "#FFF3CD" },
+                        { key: "departure", color: "#FFF3CD" },
+                        { key: "destination", color: "#FFF3CD" },
+                        { key: "departure_time", color: "#FFF3CD" },
+                        { key: "arrival_time", color: "#FFF3CD" },
+                        { key: "flight_duration", color: "#FFF3CD" },
+                        { key: "layover", color: "#FFF3CD" },
+
+
+                        { key: "Total_seats", color: "#F8D7DA" },
+                        { key: "Seats_booked", color: "#F8D7DA" },
+              
+
+                        { key: "terminal", color: "#E2D6F9" },
+                        
+
+                        { key: "missed_status", color: "#E9ECEF" },
+                        { key: "cancellation_policy", color: "#E9ECEF" },
+                       
+                    ].map(({ key, color }) => (
+                        <TableCell 
+                            key={key} 
+                            sx={{ backgroundColor: isAmountZero ? "#FFAAAA" : color }} 
+                        >
+                            {key === "ticket_url" ? (
+                                <a href={row[key]} target="_blank" rel="noopener noreferrer">View Ticket</a>
+                            ) : (
+                                row[key]
+                            )}
+                        </TableCell>
+                    ))}
+
+                   
+                </TableRow>
+            );
+        })}
+</TableBody>
+
+
+
+    </Table>
+</TableContainer>
+
 
            {/* Graphs Section */}
            <div className="container charts-container">
@@ -221,14 +316,14 @@ const AnalyticsConsumer = ({ email }) => {
     data={{
         labels: Object.keys(dateExpenditure),
         datasets: [{
-            label: "Total Expenditure By Date Booked",
+            label: "Total Ballance By Date Booked",
             data: Object.values(dateExpenditure),
             borderColor: "green"
         }]
     }} 
     options={{
         responsive: true,
-        maintainAspectRatio: false,  
+        maintainAspectRatio: false,  // ❌ Disable aspect ratio to allow height changes
     }}
 />
 
@@ -239,7 +334,7 @@ const AnalyticsConsumer = ({ email }) => {
             <Pie 
                 data={{
                     labels: paymentMethods,
-                    datasets: [{ data: paymentCounts, backgroundColor:generateRandomColors(paymentMethods.length) }]
+                    datasets: [{ data: paymentCounts, backgroundColor:generateRandomColors( paymentMethods.length) }]
                 }}
             />
         </div>
@@ -250,14 +345,14 @@ const AnalyticsConsumer = ({ email }) => {
     <Bubble 
         data={{
             datasets: [{
-                label: "Duration vs. Amount Paid",
+                label: "Duration vs. Amount Earn",
                 data: flightDurationAmount.map(item => ({
                     x: item.x, 
                     y: item.y, 
                     r: Math.random() * 10 + 5 // Random radius for better visual appeal
                 })), 
-                backgroundColor: generateRandomColors(flightDurationAmount.length),
-                borderColor:generateRandomColors(flightDurationAmount.length),
+                backgroundColor: generateRandomColors(flightDurationAmount.length) ,
+                borderColor:generateRandomColors(flightDurationAmount.length) ,
                 borderWidth: 1
             }]
         }}
@@ -292,8 +387,8 @@ const AnalyticsConsumer = ({ email }) => {
                     datasets: [{
                         label: "Check-in Status Frequency",
                         data: checkInCounts,
-                        backgroundColor: generateRandomColors(checkInCounts.length) , // Different colors for each slice
-                        borderColor:generateRandomColors(checkInCounts.length) ,
+                        backgroundColor:  generateRandomColors(checkInCounts.length) , // Different colors for each slice
+                        borderColor:  generateRandomColors(checkInCounts.length) ,
                         borderWidth: 1
                     }]
                 }}
@@ -316,4 +411,4 @@ const AnalyticsConsumer = ({ email }) => {
     );
 };
 
-export default AnalyticsConsumer;
+export default UpcomingFlights_provider;
