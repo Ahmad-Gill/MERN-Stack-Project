@@ -44,7 +44,7 @@ const UpcomingFlights_provider = ({ email="heo" }) => {
     const paymentCounts = paymentMethods.map(method => 
         filteredData.filter(item => item.Total_seats === method).length
     );
-
+    
     const seatClasses = [...new Set(filteredData.map(item => item.flight_type))];
     const seatClassCounts = seatClasses.map(cls => 
         filteredData.filter(item => item.flight_type === cls).length
