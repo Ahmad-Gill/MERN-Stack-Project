@@ -77,7 +77,7 @@ function Home() {
         return;
     }
     if (isCustomer) {
-        navigate("#"); // Replace with the actual route
+        navigate("/Book_tickets"); // Replace with the actual route
     } else if (isProvider) {
         navigate("#"); // Replace with the actual route
     } else {
