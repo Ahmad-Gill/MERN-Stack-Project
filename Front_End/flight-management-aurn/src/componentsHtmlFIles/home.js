@@ -79,7 +79,7 @@ function Home() {
     if (isCustomer) {
         navigate("/Book_tickets"); // Replace with the actual route
     } else if (isProvider) {
-        navigate("#"); // Replace with the actual route
+        navigate("/AddFlight"); // Replace with the actual route
     } else {
       setPopupMessage("You are an Admin. You can't book anything.");
       setPopupType("error");

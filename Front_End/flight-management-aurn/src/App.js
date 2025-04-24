@@ -22,6 +22,7 @@ import UpcomingFlights_provider from "./componentsHtmlFIles/UpcomingFlights_prov
 import AuthContainer from "./componentsHtmlFIles/AuthContainer";
 import Book_Now from "./componentsHtmlFIles/Book_tickets";
 import Flight_Details from "./componentsHtmlFIles/Details";
+import AddFlight from "./componentsHtmlFIles/Add_Flight";
 
 const Layout = () => {
   const location = useLocation();
@@ -44,6 +45,7 @@ const Layout = () => {
         <Route path="/UpcomingFlights_provider" element={<UpcomingFlights_provider />} />
         <Route path="/jet-types" element={<JetTypes />} />
         <Route path="/Book_tickets" element = {<Book_Now />} />
+        <Route path="/AddFlight" element = {<AddFlight />} />
         <Route path = "/Details/:flight/:airline/:departure/:departure_time/:departure_date/:destination/:boarding_time/:arrival_date" element = {<Flight_Details />} />
       </Routes>
       {!paths.includes(location.pathname.toLowerCase()) &&<SupportChat />}

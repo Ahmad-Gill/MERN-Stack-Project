@@ -41,16 +41,24 @@ function Flight_Details() {
     <div className="Book_Ticket_Container">
         <h1 id = "ticket">Booking Details</h1>
         <div id = "details_info">
-            <p id =" flight">Flight No:  {flight}</p>
-            <p id = "airways">Airline:  {airline}</p>
-            <br />
-            <p id = "depa">Departure:  {departure}</p>
-            <p id = "depa_time">Departure Time:  {departure_time}</p>
-            <p id = "depa_date">Departure Date:  {departure_date}</p>
-            <br />
-            <p id = "dest">Arrival:  {destination}</p>
-            <p id = "dest_date">Arrival Date:  {arrival_date}</p>
-            <p id = "dest_time">Arrival Time: {boarding_time}</p>
+        <div id="flight_details">
+  <div className="detail_section">
+    <p id="flight"><strong>Flight No:</strong> {flight}</p>
+    <p id="airways"><strong>Airline:</strong> {airline}</p>
+  </div>
+
+  <div className="detail_section">
+    <p id="depa"><strong>Departure:</strong> {departure}</p>
+    <p id="depa_time"><strong>Departure Time:</strong> {departure_time}</p>
+    <p id="depa_date"><strong>Departure Date:</strong> {departure_date}</p>
+  </div>
+
+  <div className="detail_section">
+    <p id="dest"><strong>Arrival:</strong> {destination}</p>
+    <p id="dest_date"><strong>Arrival Date:</strong> {arrival_date}</p>
+    <p id="dest_time"><strong>Arrival Time:</strong> {boarding_time}</p>
+  </div>
+</div>
 
         {/*Seat*/}
         <div className="in_row">
@@ -74,6 +82,23 @@ function Flight_Details() {
             <option value = "Premium">Premium Economy</option>
         </select>
         </div>
+        <div className="in_row">
+    <label htmlFor="seat_number">Choose Number of Seats</label>
+    <select
+      id="class_booking"
+      name="seat_number"
+      value={flight_details.seat_number}
+      onChange={handle_Change}
+    >
+      <option value="">Select Seats</option>
+      {/* Hardcoded seat values, change with backend value when ready */}
+      {[1, 2, 3, 4, 5].map((num) => (
+        <option key={num} value={num}>
+          {num} {num === 1 ? "Seat" : "Seats"}
+        </option>
+      ))}
+    </select>
+  </div>
 
         {/*Meal*/}
         <div className="in_row">

@@ -93,3 +93,46 @@ $primaryColor: darkblue;
     }
   }
 }
+#flight_details {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
+
+  .detail_section {
+    margin-bottom: 20px;
+
+    /* Header for each section */
+    p {
+      font-size: 1.1rem;
+      color: #333;
+      margin: 8px 0;
+      line-height: 1.6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: #f9f9f9;
+      }
+
+      strong {
+        font-weight: bold;
+        color: #555;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 15px;
+
+    .detail_section p {
+      font-size: 1rem;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+}

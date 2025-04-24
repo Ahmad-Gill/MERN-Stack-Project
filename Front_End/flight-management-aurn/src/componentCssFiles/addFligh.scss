@@ -1,0 +1,267 @@
+$primaryColor: darkblue;
+.add-flight-form {
+    background-color: #fff;
+    padding: 400px;
+    margin-top: 70%;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 140px auto !important;
+  
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 40px;
+      font-weight: 600;
+    }
+  
+    .form-section {
+      margin-bottom: 30px;
+  
+      label {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+      }
+  
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f7f7f7;
+        box-sizing: border-box;
+        transition: border 0.3s ease, background-color 0.3s ease;
+        margin-bottom: 15px;
+  
+        &:focus {
+          background-color: #fff;
+          outline: none;
+        }
+      }
+  
+      textarea {
+        height: 120px;
+        resize: vertical;
+      }
+  
+      .seat-class,
+      .pricing-class {
+        margin-top: 15px;
+        h4 {
+          font-size: 1.2rem;
+          margin-bottom: 12px;
+          font-weight: 600;
+        }
+  
+        div {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+  
+          label {
+            font-size: 1rem;
+          }
+  
+          input {
+            width: 80px;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background-color: #fafafa;
+  
+            &:focus {
+              background-color: #fff;
+            }
+          }
+        }
+      }
+  
+      // Updated food options layout to display each food option in separate rows
+      .food-options {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+  
+        label {
+          font-size: 1rem;
+          
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          width: 45%;
+          
+          input {
+            width: auto;
+            margin-right: 8px;
+          }
+        }
+      }
+  
+      select {
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f7f7f7;
+    
+        box-sizing: border-box;
+  
+        &:focus {
+       
+          background-color: #fff;
+          outline: none;
+        }
+      }
+    }
+  
+    button {
+      background-color:$primaryColor;
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      width: 100%;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+  
+      &:hover {
+        background-color: $primaryColor;
+        transform: scale(1.05);
+      }
+  
+      &:active {
+        transform: scale(1);
+      }
+    }
+  
+    .form-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+  
+      .form-section {
+        flex: 1 1 45%;
+        min-width: 300px;
+      }
+    }
+  
+    @media (max-width: 768px) {
+      padding: 20px;
+  
+      h1 {
+        font-size: 1.8rem;
+      }
+  
+      .form-section {
+        margin-bottom: 20px;
+      }
+  
+      .form-group {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  
+    @media (max-width: 480px) {
+      padding: 15px;
+  
+      h1 {
+        font-size: 1.6rem;
+      }
+  
+      button {
+        padding: 12px;
+        font-size: 1rem;
+      }
+  
+      .form-section {
+        margin-bottom: 15px;
+      }
+    }
+  }
+  .add-flight-form {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 30px auto;
+
+  
+    .form-section {
+      margin-bottom: 30px;
+  
+      h3 {
+        font-size: 1.5rem;
+   
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+  
+      label {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 20px; /* Add some spacing between each checkbox */
+        font-size: 1rem;
+     
+        
+        input {
+          margin-right: 8px; /* Add space between the checkbox and label */
+        }
+      }
+    }
+  
+    // Additional form styling
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f7f7f7;
+  
+      box-sizing: border-box;
+      margin-bottom: 15px;
+  
+      &:focus {
+        
+        background-color: #fff;
+        outline: none;
+      }
+    }
+  
+    button {
+    
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      width: 100%;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+  
+      &:hover {
+     
+        transform: scale(1.05);
+      }
+  
+      &:active {
+        transform: scale(1);
+      }
+    }
+  }
+    

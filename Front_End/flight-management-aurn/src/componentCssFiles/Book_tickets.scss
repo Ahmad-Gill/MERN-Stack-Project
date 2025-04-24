@@ -1,49 +1,57 @@
-$primaryColor:  darkblue;
+$primaryColor: darkblue;
 
-
-#flight_heading{
-    margin-top:100px;
-    margin-bottom: 25px;
+#flight_heading {
+  margin-top: 100px;
+  margin-bottom: 25px;
 }
 
-
-#Flight_Table table {
+#Flight_Table {
+  table {
     width: 100%;
-    margin-bottom: 25px;
+    margin-bottom: 50px;
     border-collapse: collapse;
     table-layout: fixed;
-    margin-bottom: 50px;
-}
+  }
 
-#Flight_Table th, #Flight_Table td {
+  th,
+  td {
     padding: 12px;
     border-bottom: 1px solid #ddd;
     text-align: left;
-    width:200px;
-}
+    width: 200px;
+  }
 
-#Flight_Table th {
+  th {
     font-weight: bold;
-    background-color: white!important;
-    color:darkblue;
+    background-color: white !important;
+    color: $primaryColor;
     position: sticky;
     top: 0;
     z-index: 2;
-}
+  }
 
-#Flight_Table tr:hover {
+  tr:hover {
     background-color: #f1f8ff;
+  }
 }
 
-#book_flight_button{
-    width: 100%;
-    padding: 12px;
-    background:$primaryColor;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: $primaryColor 0.3s ease;
+#book_flight_button {
+  width: 100%;
+  padding: 12px;
+  background: $primaryColor;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: lighten($primaryColor, 10%);
+  }
 }
+.Flights {
+    padding: 0 30px; // adds left and right padding
+  }
+  
