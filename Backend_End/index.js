@@ -15,7 +15,9 @@ app.get('/', (req, res) => res.send('API is running...'));
 
 // Ensure this line is correct
 const userRoutes = require('./routes/userRoutes');
+const flightRoutes = require('./routes/flightRout');
 app.use('/user', userRoutes); // Routes are prefixed with '/user'
+app.use('/flight',flightRoutes );
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
