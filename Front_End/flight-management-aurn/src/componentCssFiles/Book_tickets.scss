@@ -55,3 +55,34 @@ $primaryColor: darkblue;
     padding: 0 30px; // adds left and right padding
   }
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  
+    .search-input {
+      flex: 1;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+  }
+  

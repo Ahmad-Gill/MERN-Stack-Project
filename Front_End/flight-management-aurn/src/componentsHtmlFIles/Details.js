@@ -120,7 +120,7 @@ function Flight_Details() {
         flight_details.class === "Economy" ? <p id = "price">Total Bill: {economy_price}</p> : 
         flight_details.class === "Premium" ? <p id = "price">Total Bill: {economy_prem_price}</p> : 
         flight_details.class === "First" ? <p id = "price">Total Bill: {first_class}</p> : ""}*/}
-        <button id = "Payment" onClick = {handle_Click}>Confirm Payment</button>
+        <button id = "Payment" onClick = {handle_Click}>Confirm Seat</button>
         </div>
         {popupMessage && (
                 <Popup
