@@ -16,7 +16,9 @@ app.get('/', (req, res) => res.send('API is running...'));
 // Ensure this line is correct
 const userRoutes = require('./routes/userRoutes');
 const flightRoutes = require('./routes/flightRout');
+const userDetailRoutes = require('./routes/userDetailRoutes');
 app.use('/user', userRoutes); // Routes are prefixed with '/user'
+app.use('/user_details',userDetailRoutes)
 app.use('/flight',flightRoutes );
 
 const PORT = process.env.PORT || 5000;
