@@ -1,4 +1,4 @@
-const Flight = require('../models/flightModel');
+const Flight = require('../models/Flight');
 
 // Create a new flight
 const createFlight = async (req, res) => {
