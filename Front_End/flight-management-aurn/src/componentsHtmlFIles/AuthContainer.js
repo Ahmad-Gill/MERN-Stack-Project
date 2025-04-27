@@ -74,8 +74,8 @@ function AuthPage() {
       console.log("Log In Data:", logInData);
       dispatch(setEmail(signUpData.email));
       dispatch(setActiveStatus(true));
-      dispatch(setCustomerStatus(true
-      ));
+      // dispatch(setCustomerStatus(false));
+      // dispatch(setProviderStatus(false));
     }
 
     navigate("/");
@@ -160,7 +160,7 @@ function SignUpForm({ signUpData, handleChange, handleSubmission, error }) {
       <input className="auth" type="password" name="password" value={signUpData.password} onChange={handleChange} placeholder="Password (At least 8 characters)" minLength="8" required/>
       <input className="auth"type="password"name="cnfrm_pass"value={signUpData.cnfrm_pass}onChange={handleChange}placeholder="Confirm Password"minLength="8"required/>
       {error && <p className="error-message">{error}</p>}
-      <select id="cus_prov" name="prov_cus" value={signUpData.prov_cus} onChange={handleChange} required>
+      <select id="cus_prov" name="prov_cus" value={signUpData.prov_cus} onChange={handleChange}>
         <option value="">Choose Your Role</option>
         <option value="Provider">Provider</option>
         <option value="Customer">Customer</option>

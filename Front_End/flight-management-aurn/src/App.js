@@ -23,6 +23,8 @@ import AuthContainer from "./componentsHtmlFIles/AuthContainer";
 import Book_Now from "./componentsHtmlFIles/Book_tickets";
 import Flight_Details from "./componentsHtmlFIles/Details";
 import AddFlight from "./componentsHtmlFIles/Add_Flight";
+import AnalyticsAdmin from "./componentsHtmlFIles/Analytics_admin";
+import UpcomingFlights_admin from "./componentsHtmlFIles/UpcomingFlights_admin";
 
 const Layout = () => {
   const location = useLocation();
@@ -46,6 +48,9 @@ const Layout = () => {
         <Route path="/jet-types" element={<JetTypes />} />
         <Route path="/Book_tickets" element = {<Book_Now />} />
         <Route path="/AddFlight" element = {<AddFlight />} />
+        <Route path="/AnalyticsAdmin" element = {<AnalyticsAdmin />} />
+        <Route path="/UpcomingFlights_admin" element = {<UpcomingFlights_admin />} />
+        
         <Route path = "/Details/:flight/:airline/:departure/:departure_time/:departure_date/:destination/:boarding_time/:arrival_date" element = {<Flight_Details />} />
       </Routes>
       {!paths.includes(location.pathname.toLowerCase()) &&<SupportChat />}
