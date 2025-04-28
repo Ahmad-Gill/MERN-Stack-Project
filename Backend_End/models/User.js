@@ -8,4 +8,44 @@ const userSchema = new mongoose.Schema({
   customer: { type: Boolean, default: false }
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', userSchema);
+
+const userInformationSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true, // Username must be unique
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true, // Email must be unique
+  },
+  phoneNumber: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  dateOfBirth: {
+    type: Date,
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female', 'Other'], // optional validation
+  },
+  country: {
+    type: String,
+  },
+  preferredLanguage: {
+    type: String,
+  },
+  image: {
+    type: String, // URL or filename of uploaded image
+  }
+}, { timestamps: true }); // Adds createdAt and updatedAt automatically
+
+
+module.exports = {
+  User: mongoose.model('User', userSchema),
+  UserInformation: mongoose.model('userInformation', userInformationSchema)
+};

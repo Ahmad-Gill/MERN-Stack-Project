@@ -1,0 +1,101 @@
+.admin-chart {
+    padding: 80px;
+    font-family: 'Arial', sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+  
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #333;
+    }
+  
+    label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+  
+    select {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      min-width: 250px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+  
+    .messages {
+      border: 1px solid #ddd;
+      padding: 15px;
+      height: 300px;
+      overflow-y: auto;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+  
+      .message {
+        margin-bottom: 10px;
+        padding: 8px;
+        border-radius: 5px;
+  
+        strong {
+          color: #007bff;
+        }
+      }
+    }
+  
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+  
+    button {
+      margin-top: 10px;
+      background-color: #007bff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+  
+
+  .select-user-container {
+    margin: 20px 0;
+  
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: black; // Label text color
+    }
+  
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      color: black; // Selected text color
+      background-color: white; // Background color
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+  
+      option {
+        color: black; // Options text color
+        background-color: white;
+      }
+    }
+  }
+  

@@ -33,7 +33,7 @@ function AuthPage() {
 
   const [signUpData, setSignUpData] = useState({
     full_name: "",
-    email: "",
+    email: "m.ahmadgill01@gmail.com",
     password: "",
     cnfrm_pass: "",
     prov_cus: "",

@@ -25,6 +25,7 @@ import Flight_Details from "./componentsHtmlFIles/Details";
 import AddFlight from "./componentsHtmlFIles/Add_Flight";
 import AnalyticsAdmin from "./componentsHtmlFIles/Analytics_admin";
 import UpcomingFlights_admin from "./componentsHtmlFIles/UpcomingFlights_admin";
+import AdminChart from "./componentsHtmlFIles/AdminChart";
 
 const Layout = () => {
   const location = useLocation();
@@ -47,6 +48,7 @@ const Layout = () => {
         <Route path="/UpcomingFlights_provider" element={<UpcomingFlights_provider />} />
         <Route path="/jet-types" element={<JetTypes />} />
         <Route path="/Book_tickets" element = {<Book_Now />} />
+        <Route path="/AdminChart" element = {<AdminChart />} />
         <Route path="/AddFlight" element = {<AddFlight />} />
         <Route path="/AnalyticsAdmin" element = {<AnalyticsAdmin />} />
         <Route path="/UpcomingFlights_admin" element = {<UpcomingFlights_admin />} />

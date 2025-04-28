@@ -1,115 +1,128 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faMessage, faTimes, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useRef, useEffect } from "react";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import Popup from "../componentsHtmlFIles/Popup";
-
 import "../componentCssFiles/SupportChat.scss";
-
-
-
-
 import { useSelector, useDispatch } from "react-redux";
-import { setName, setEmail, setActiveStatus, setCustomerStatus, setProviderStatus, resetUser } from "../store";
 
 const SupportChat = () => {
-      const [popupType, setPopupType] = useState(null);
-      const [popupMessage, setPopupMessage] = useState(null);
-    const user = useSelector((state) => state.user);       //REdux comands
-    const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { isActive } = useSelector((state) => state.user);
+  const email = useSelector((state) => state.user.email);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [popupType, setPopupType] = useState(null);
+  const [popupMessage, setPopupMessage] = useState(null);
+
   const chatBodyRef = useRef(null);
 
-  const toggleChat = () => {
+  const toggleChat = async () => {
+    if (!isActive) {
+      setPopupMessage("Please log in first!");
+      setPopupType("error");
+      return;
+    }
+
     setIsOpen(!isOpen);
+
+    if (!isOpen && email) {
+      try {
+        const response = await fetch(`http://localhost:5000/chat/messages/${email}`);
+        const data = await response.json();
+        if (data.messages) {
+          const loadedMessages = data.messages.map((msg) => ({
+            text: msg.text,
+            sender: msg.type === 'original' ? 'user' : 'support',  // ✅ Correctly identify sender
+          }));
+          setMessages(loadedMessages);
+          scrollToBottom();
+        }
+      } catch (error) {
+        console.error("Failed to fetch messages:", error);
+      }
+    }
   };
 
   const sendMessage = async () => {
     if (input.trim() === "") return;
 
+    if (!email) {
+      setPopupMessage("User email not found. Please log in again.");
+      setPopupType("error");
+      return;
+    }
+
     const newMessages = [...messages, { text: input, sender: "user" }];
     setMessages(newMessages);
     setInput("");
-
-    // Auto-scroll to the latest message
-    setTimeout(scrollToBottom, 100);
+    scrollToBottom();
 
     try {
-        // Simulating an API response instead of calling an actual API
-        setTimeout(() => {
-            const dummyResponse = { reply: "This is a dummy bot response." };
-            setMessages([...newMessages, { text: dummyResponse.reply, sender: "bot" }]);
-            scrollToBottom();
-        }, 1000); // Simulating network delay
+      const response = await fetch(`http://localhost:5000/chat/message`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          message: input,
+          type: "original",
+        }),
+      });
 
-        /*
-        // Uncomment this to send a real API request
-        const response = await fetch("https://your-api-endpoint.com/sendMessage", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ message: input }),
-        });
+      const data = await response.json();
+      console.log("Server response:", data);
 
-        const data = await response.json();
-        setMessages([...newMessages, { text: data.reply, sender: "bot" }]);
+      if (response.ok) {
+        // Add server response as support message
+        const responseMessage = { text: data.responseText, sender: 'support' };
+        setMessages((prevMessages) => [...prevMessages, responseMessage]);
         scrollToBottom();
-        */
+      } else {
+        setPopupMessage(data.message || "Failed to send message.");
+        setPopupType("error");
+      }
+
     } catch (error) {
-        console.error("Error sending message:", error);
+      console.error("Error sending message:", error);
+      setPopupMessage("Error connecting to server.");
+      setPopupType("error");
     }
-};
+  };
 
-// Function to scroll down to the latest message
-const scrollToBottom = () => {
+  const scrollToBottom = () => {
     if (chatBodyRef.current) {
-        chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
-};
+  };
 
-// Auto-scroll when messages update
-useEffect(() => {
+  useEffect(() => {
     scrollToBottom();
-}, [messages]);
-
+  }, [messages]);
 
   return (
     <>
       {/* Floating Chat Icon */}
-      <div
-  className="chat-icon"
-  onClick={() => {
-    if (!isActive) {
-      setPopupMessage("Please log in first!");
-      setPopupType("error");
-    } else {
-      toggleChat();
-    }
-  }}
->
-  <FontAwesomeIcon icon={faMessage} size="lg" />
-</div>
-
-
-
-
+      <div className="chat-icon" onClick={toggleChat}>
+        <FontAwesomeIcon icon={faMessage} size="lg" />
+      </div>
 
       {/* Chat Popup Window */}
       {isOpen && (
         <div className="chat-popup">
-<div className="cta-button chat-header">
-    <span className="chat-title">Chat</span> 
-    <FontAwesomeIcon icon={faTimes} className="close-btn" onClick={toggleChat} />
-</div>
-
+          <div className="cta-button chat-header">
+            <span className="chat-title">Chat</span>
+            <FontAwesomeIcon icon={faTimes} className="close-btn" onClick={toggleChat} />
+          </div>
 
           <div className="chat-body" ref={chatBodyRef}>
             {messages.map((msg, index) => (
-              <div key={index} className={`chat-message ${msg.sender}`}>
-                {msg.text}
+              <div
+                key={index}
+                className={`chat-message ${msg.sender === 'user' ? 'user-message' : 'support-message'}`}
+              >
+                <div className="message-text">{msg.text}</div>
               </div>
             ))}
           </div>
@@ -123,23 +136,21 @@ useEffect(() => {
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
             />
             <button onClick={sendMessage} className="send-btn">
-    <FontAwesomeIcon icon={faPaperPlane} />
-</button>
-
+              <FontAwesomeIcon icon={faPaperPlane} />
+            </button>
           </div>
         </div>
       )}
 
-
-       {/*--------------------------------- POP up message ---------------- */}
-          {popupMessage && (
-        <Popup 
-          message={popupMessage} 
-          type={popupType} 
+      {/* Popup for errors */}
+      {popupMessage && (
+        <Popup
+          message={popupMessage}
+          type={popupType}
           onClose={() => {
             setPopupMessage(null);
             setPopupType(null);
-          }} 
+          }}
         />
       )}
     </>

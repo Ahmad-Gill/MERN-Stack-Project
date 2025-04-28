@@ -33,9 +33,9 @@ const clearState = () => {
 // Initial State
 const initialState = {
     name: "",
-    email: "",
+    email: "m.ahmadgill01@gmail.com",
     isActive: false,
-    isCustomer: false,
+    isCustomer: true,
     isProvider: false,
 };
 

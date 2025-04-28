@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { createFlight } = require('../controllers/flightController');
+const { createFlight, sendEmail } = require('../controllers/flightController');
 
-router.post('/', createFlight); // POST /flights/add
+// Ensure both routes are correct
+router.post('/', createFlight); 
+router.post('/email', sendEmail);
 
 module.exports = router;
