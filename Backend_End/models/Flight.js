@@ -1,10 +1,30 @@
 const mongoose = require('mongoose');
 
+// Reusable schema for seat structure
+const seatTypeSchema = new mongoose.Schema({
+  total: { type: Number, default: 0 },
+  booked: { type: Number, default: 0 }
+}, { _id: false });
+
+// Reusable schema for seat pricing
+const seatPriceSchema = new mongoose.Schema({
+  window: { type: Number, default: 0 },
+  middle: { type: Number, default: 0 },
+  aisle: { type: Number, default: 0 }
+}, { _id: false });
+
+// Main Flight schema
 const flightSchema = new mongoose.Schema({
-  flightName: { type: String, required: true },
-  airlineCode: { type: String, required: false },
-  origin: { type: String, required: true },
-  destination: { type: String, required: true },
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true
+  },
+  flightName: { type: String, required: true, trim: true },
+  airlineCode: { type: String, trim: true },
+  origin: { type: String, required: true, trim: true },
+  destination: { type: String, required: true, trim: true },
   departureDate: { type: Date, required: true },
   arrivalDate: { type: Date, required: true },
   departureTime: { type: String, required: true },
@@ -12,48 +32,32 @@ const flightSchema = new mongoose.Schema({
 
   seats: {
     business: {
-      window: { type: Number, default: 0 },
-      middle: { type: Number, default: 0 },
-      aisle: { type: Number, default: 0 }
+      window: seatTypeSchema,
+      middle: seatTypeSchema,
+      aisle: seatTypeSchema
     },
     economy: {
-      window: { type: Number, default: 0 },
-      middle: { type: Number, default: 0 },
-      aisle: { type: Number, default: 0 }
+      window: seatTypeSchema,
+      middle: seatTypeSchema,
+      aisle: seatTypeSchema
     },
     firstClass: {
-      window: { type: Number, default: 0 },
-      middle: { type: Number, default: 0 },
-      aisle: { type: Number, default: 0 }
+      window: seatTypeSchema,
+      middle: seatTypeSchema,
+      aisle: seatTypeSchema
     },
     premium: {
-      window: { type: Number, default: 0 },
-      middle: { type: Number, default: 0 },
-      aisle: { type: Number, default: 0 }
+      window: seatTypeSchema,
+      middle: seatTypeSchema,
+      aisle: seatTypeSchema
     }
   },
 
   pricing: {
-    business: {
-      window: { type: Number },
-      middle: { type: Number },
-      aisle: { type: Number }
-    },
-    economy: {
-      window: { type: Number },
-      middle: { type: Number },
-      aisle: { type: Number }
-    },
-    firstClass: {
-      window: { type: Number },
-      middle: { type: Number },
-      aisle: { type: Number }
-    },
-    premium: {
-      window: { type: Number },
-      middle: { type: Number },
-      aisle: { type: Number }
-    }
+    business: seatPriceSchema,
+    economy: seatPriceSchema,
+    firstClass: seatPriceSchema,
+    premium: seatPriceSchema
   },
 
   foodOptions: {
@@ -75,5 +79,6 @@ const flightSchema = new mongoose.Schema({
   }
 });
 
+// Create and export the model
 const Flight = mongoose.model('Flight', flightSchema);
 module.exports = Flight;

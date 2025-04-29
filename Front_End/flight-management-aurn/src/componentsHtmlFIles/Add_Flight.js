@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import "../componentCssFiles/addFligh.scss";
 
 function AddFlight() {
+  const email = useSelector((state) => state.user.email);
   const [flightDetails, setFlightDetails] = useState({
     flightName: "",
     airlineCode: "",
@@ -49,12 +51,12 @@ function AddFlight() {
         ...flightDetails.seats,
         [classType]: {
           ...flightDetails.seats[classType],
-          [seatType]: value,
+          [seatType]: parseInt(value, 10),  // Convert to number
         },
       },
     });
   };
-
+  
   const handlePricingChange = (e, classType, seatType) => {
     const { value } = e.target;
     setFlightDetails({
@@ -63,11 +65,12 @@ function AddFlight() {
         ...flightDetails.pricing,
         [classType]: {
           ...flightDetails.pricing[classType],
-          [seatType]: value,
+          [seatType]: parseFloat(value),  // For decimal values
         },
       },
     });
   };
+  
 
   const handleFoodOptionsChange = (e) => {
     const { name, checked } = e.target;
@@ -80,10 +83,38 @@ function AddFlight() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(flightDetails); // Here you would send the data to the backend
+  
+    const dataToSend = {
+      ...flightDetails,
+      email, // include the email of the user submitting
+    };
+  
+    try {
+      const response = await fetch("http://localhost:5000/flight", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        alert("Flight added successfully!");
+        console.log(result);
+      } else {
+        alert("Failed to add flight: " + result.message);
+        console.error(result);
+      }
+    } catch (error) {
+      alert("Error connecting to server");
+      console.error("Error:", error);
+    }
   };
+  
 
   return (
     <div className="add-flight-form">
