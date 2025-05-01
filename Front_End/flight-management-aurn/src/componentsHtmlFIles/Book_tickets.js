@@ -1,29 +1,62 @@
-import { useState } from "react";
-import data_flight from '../componentsJsFiles/flights_data.json';
+import { useState, useEffect } from "react";
 import "../componentCssFiles/Book_tickets.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 function Book_Now() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchDate, setSearchDate] = useState("");
+  const [flightsData, setFlightsData] = useState([]);
+  const [searchParams] = useSearchParams();
+  const flightIdFromSearch = searchParams.get("id"); // Get flight _id from the URL
 
-  function goToDetails(flight, airline, departure, departure_time, departure_date, destination, boarding_time, arrival_date) {
-    navigate(`/Details/${flight}/${airline}/${departure}/${departure_time}/${departure_date}/${destination}/${boarding_time}/${arrival_date}`);
-  }
+  // Fetch flight data from the API
+  useEffect(() => {
+    fetch("http://localhost:5000/flight/geetAll")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "All flights fetched successfully") {
+          setFlightsData(data.flights);
+        }
+      })
+      .catch((error) => console.error("Error fetching flight data:", error));
+  }, []);
 
-  // Filtered data based on search
-  const filteredData = data_flight.filter((data) => {
+  // Filtered data based on search or _id from URL
+  const filteredData = flightsData.filter((data) => {
+    console.log("-----------------ID",flightIdFromSearch)
     const textMatch =
-      data.flight.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.airline.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.departure.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      data.flightName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      data.airlineCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      data.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
       data.destination.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const dateMatch = searchDate === "" || data.date === searchDate;
+    const dateMatch =
+      searchDate === "" || data.departureDate.split("T")[0] === searchDate;
 
-    return textMatch && dateMatch;
+    // If there's a flight ID in the searchParams, only show the matching flight
+    const idMatch = flightIdFromSearch ? data._id === flightIdFromSearch : true;
+   
+
+    return textMatch && dateMatch && idMatch;
   });
+
+  function goToDetails(
+    id,
+    flight,
+    airline,
+    departure,
+    departure_time,
+    departure_date,
+    destination,
+    boarding_time,
+    arrival_date
+  ) {
+    navigate(
+      `/Details/${id}/${flight}/${airline}/${departure}/${departure_time}/${departure_date}/${destination}/${boarding_time}/${arrival_date}`
+    );
+  }
 
   return (
     <div className="Flights">
@@ -31,21 +64,20 @@ function Book_Now() {
 
       {/* Search bar */}
       <div className="search-container">
-  <input
-    type="text"
-    className="search-input"
-    placeholder="Search by flight no, airline, departure, arrival..."
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-  />
-  <input
-    type="date"
-    className="search-input"
-    value={searchDate}
-    onChange={(e) => setSearchDate(e.target.value)}
-  />
-</div>
-
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search by flight no, airline, departure, arrival..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <input
+          type="date"
+          className="search-input"
+          value={searchDate}
+          onChange={(e) => setSearchDate(e.target.value)}
+        />
+      </div>
 
       <table id="Flight_Table">
         <thead>
@@ -58,51 +90,78 @@ function Book_Now() {
             <th>Arrival</th>
             <th>Time</th>
             <th>Date</th>
+            <th>Available Seats</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-  {filteredData.length > 0 ? (
-    filteredData.map((data, index) => (
-      <tr key={index}>
-        <td>{data.flight}</td>
-        <td>{data.airline}</td>
-        <td>{data.departure}</td>
-        <td>{data.departure_time}</td>
-        <td>{data.date}</td>
-        <td>{data.destination}</td>
-        <td>{data.boarding_time}</td>
-        <td>{data.date}</td>
-        <td>
-          <button
-            id="book_flight_button"
-            onClick={() =>
-              goToDetails(
-                data.flight,
-                data.airline,
-                data.departure,
-                data.departure_time,
-                data.date,
-                data.destination,
-                data.boarding_time,
-                data.date
-              )
-            }
-          >
-            Book Seat
-          </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="9" style={{ textAlign: "center", padding: "10px" }}>
-        Empty
-      </td>
-    </tr>
-  )}
-</tbody>
+          {filteredData.length > 0 ? (
+            filteredData.map((data) => {
+              const availableBusinessSeats =
+                data.seatStats.business.totalSeats -
+                data.seatStats.business.bookedSeats;
+              const availableEconomySeats =
+                data.seatStats.economy.totalSeats -
+                data.seatStats.economy.bookedSeats;
+              const availableFirstClassSeats =
+                data.seatStats.firstClass.totalSeats -
+                data.seatStats.firstClass.bookedSeats;
+              const availablePremiumSeats =
+                data.seatStats.premium.totalSeats -
+                data.seatStats.premium.bookedSeats;
 
+              const totalAvailableSeats =
+                availableBusinessSeats +
+                availableEconomySeats +
+                availableFirstClassSeats +
+                availablePremiumSeats;
+
+              return (
+                <tr key={data._id}>
+                  <td>{data.flightName}</td>
+                  <td>{data.airlineCode}</td>
+                  <td>{data.origin}</td>
+                  <td>{data.departureTime}</td>
+                  <td>{data.departureDate.split("T")[0]}</td>
+                  <td>{data.destination}</td>
+                  <td>{data.arrivalTime}</td>
+                  <td>{data.arrivalDate.split("T")[0]}</td>
+                  <td>{totalAvailableSeats}</td>
+                  <td>
+                    {totalAvailableSeats === 0 ? (
+                      <span>Full</span>
+                    ) : (
+                      <button
+                        id="book_flight_button"
+                        onClick={() =>
+                          goToDetails(
+                            data._id,
+                            data.flightName,
+                            data.airlineCode,
+                            data.origin,
+                            data.departureTime,
+                            data.departureDate,
+                            data.destination,
+                            data.departureTime,
+                            data.arrivalDate
+                          )
+                        }
+                      >
+                        Book Seat
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td colSpan="10" style={{ textAlign: "center", padding: "10px" }}>
+                No Flights Available
+              </td>
+            </tr>
+          )}
+        </tbody>
       </table>
     </div>
   );

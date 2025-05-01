@@ -29,6 +29,7 @@ const flightSchema = new mongoose.Schema({
   arrivalDate: { type: Date, required: true },
   departureTime: { type: String, required: true },
   arrivalTime: { type: String, required: true },
+  totalEarnings: { type: Number, default: 0 },
 
   seats: {
     business: {
@@ -76,7 +77,8 @@ const flightSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  
 });
 
 // Create and export the model

@@ -9,13 +9,19 @@ import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, 
     Select, MenuItem, Drawer, Button, IconButton
 } from "@mui/material";
+import axios from "axios";
+import Popup from "../componentsHtmlFIles/Popup";
 import MenuIcon from "@mui/icons-material/Menu";
 import "../componentCssFiles/flight_consuer.scss";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Tooltip, Legend, RadialLinearScale);
 
-const UpcomingFlights_provider = ({ email="heo" }) => {
+const UpcomingFlights_provider = () => {
     const [data, setData] = useState([]);
+        const [popupType, setPopupType] = useState(null);
+        const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+        const [popupMessage, setPopupMessage] = useState(null);
       const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
       const user = useSelector((state) => state.user);       //REdux comands
       const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
@@ -62,38 +68,69 @@ const UpcomingFlights_provider = ({ email="heo" }) => {
     }));
     
     useEffect(() => {
-        setIsLoading(true); // Show loading animation // Simulate data fetching 
-        fetchConsumerHistory(email).then((res) => {
-            setData(res);
-            setFilteredData(res);
-            
-            const extractUniqueValues = (key) => [...new Set(res.map(item => item[key]))];
-            
-            const keys = [
-                // Flight Information - Light Blue
-                "airlineCode", 
+            if (isLoading) return; // Avoid running if already loading
         
-                // Departure & Arrival Information - Light Yellow
-                "departureDate", "destination", "departureTime",
+            setIsLoading(true);
         
-                // Seat Class Information - Light Green
-                "business", "economy", "firstClass", "premium",
+            fetchConsumerHistory(user.email).then((res) => {
+                let flights = (res.flights || []).filter(flight => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const departureDate = new Date(flight.departureDate);
+                    departureDate.setHours(0, 0, 0, 0);
+                    return departureDate >= today;
+                });
+                
         
-                // Additional Information - Light Gray
-                "status",
-            ];
+                setData(flights);
+                setFilteredData(flights);
+                console.log(flights);
         
-            const options = keys.reduce((acc, key) => {
-                acc[key] = extractUniqueValues(key);
-                return acc;
-            }, {});
-            
-            setUniqueOptions(options);
-            setFilters(keys.reduce((acc, key) => ({ ...acc, [key]: "All" }), {}));
-            
-            setIsLoading(false); // Set loading state to false after data fetching
-        });
-    }, [email]);
+                const extractUniqueValues = (key) => [...new Set(flights.map(item => item[key]))];
+        
+                const keys = [
+                    "flightName", "airlineCode",
+                    "origin", "destination",
+                    "departureDate", "arrivalDate",
+                    "departureTime", "arrivalTime",
+                    "status"
+                ];
+        
+                const options = keys.reduce((acc, key) => {
+                    acc[key] = extractUniqueValues(key);
+                    return acc;
+                }, {});
+                setUniqueOptions(options);
+                setFilters(keys.reduce((acc, key) => ({ ...acc, [key]: "All" }), {}));
+        
+                // Calculate additional data
+                const updatedFlights = flights.map(flight => {
+                    const seatStats = flight.seatStats;
+                    const totalSeats = Object.values(seatStats).reduce((total, classStats) => total + classStats.totalSeats, 0);
+                    const bookedSeats = Object.values(seatStats).reduce((total, classStats) => total + classStats.bookedSeats, 0);
+        
+                    return {
+                        ...flight,
+                        totalSeats,
+                        bookedSeats,
+                        totalEarnings: flight.totalEarnings
+                    };
+                });
+        
+                // Update total expenditure based on filtered future flights
+                const totalEarnings = updatedFlights.reduce((total, flight) => total + flight.totalEarnings, 0);
+                setTotalExpenditure(totalEarnings);
+        
+                setData(updatedFlights);
+                setFilteredData(updatedFlights);
+        
+                setIsLoading(false);
+            }).catch(error => {
+                console.error("Error fetching data:", error);
+                setIsLoading(false);
+            });
+        }, [user.email, refreshTrigger]);
+    
     
     const filterData = useCallback(() => {
         let updatedData = [...data];
@@ -106,7 +143,7 @@ const UpcomingFlights_provider = ({ email="heo" }) => {
     
         // Calculate total expenditure
         const total = updatedData.reduce((sum, item) => sum + parseFloat(item.totalEarnings || 0), 0);
-        setTotalExpenditure(total);
+        
     
         setDrawerOpen(false);
     }, [filters, data]);
@@ -158,40 +195,27 @@ const UpcomingFlights_provider = ({ email="heo" }) => {
                 </Drawer>
     
                 <div className="summary-container">
-                    <h2>Total Expenditure: ${totalExpenditure.toFixed(2)}</h2>
+                    <h2>Total Profit: ${totalExpenditure.toFixed(2)}</h2>
                 </div>
     
                 <TableContainer component={Paper} className="table-container">
     <Table stickyHeader>
         <TableHead>
             <TableRow>
-                {[
-                    // Flight Information - Light Blue
-                    { key: "newFlightKey", label: "New Flight Label", color: "#D0E8FF" },
-                    { key: "newAirlineKey", label: "New Airline Label", color: "#D0E8FF" },
-                    { key: "newAirplaneModelKey", label: "New Airplane Model Label", color: "#D0E8FF" },
-                    { key: "newFlightTypeKey", label: "New Flight Type Label", color: "#D0E8FF" },
-
-                    // Booking & Payment Details - Light Green
-                    { key: "newBookingStartDateKey", label: "New Booking Start Date", color: "#D4EDDA" },
-                    { key: "newAmountEarnKey", label: "New Amount Earned", color: "#D4EDDA" },
-
-                    // Departure & Arrival Information - Light Yellow
-                    { key: "newDateKey", label: "New Flight Date", color: "#FFF3CD" },
-                    { key: "newDepartureKey", label: "New Departure", color: "#FFF3CD" },
-                    { key: "newDestinationKey", label: "New Destination", color: "#FFF3CD" },
-                    { key: "newDepartureTimeKey", label: "New Departure Time", color: "#FFF3CD" },
-                    { key: "newArrivalTimeKey", label: "New Arrival Time", color: "#FFF3CD" },
-                    { key: "newFlightDurationKey", label: "New Flight Duration", color: "#FFF3CD" },
-                    { key: "newLayoverKey", label: "New Layover", color: "#FFF3CD" },
-
-                    // Passenger Details - Light Pink
-                    { key: "newTotalSeatsKey", label: "New Total Seats", color: "#F8D7DA" },
-                    { key: "newSeatsBookedKey", label: "New Seats Booked", color: "#F8D7DA" },
-
-                    // Additional Information - Light Gray
-                    { key: "newMissedStatusKey", label: "New Missed Status", color: "#E9ECEF" },
-                    { key: "newCancellationPolicyKey", label: "New Cancellation Policy", color: "#E9ECEF" },
+                {[ 
+                    { key: "flightName", label: "Flight Name", color: "#D0E8FF" },
+                    { key: "airlineCode", label: "Airline Code", color: "#D0E8FF" },
+                    { key: "origin", label: "Origin", color: "#D4EDDA" },
+                    { key: "destination", label: "Destination", color: "#D4EDDA" },
+                    { key: "departureDate", label: "Departure Date", color: "#D4EDDA" },
+                    { key: "arrivalDate", label: "Arrival Date", color: "#D4EDDA" },
+                    { key: "departureTime", label: "Departure Time", color: "#D4EDDA" },
+                    { key: "arrivalTime", label: "Arrival Time", color: "#D4EDDA" },
+                    { key: "status", label: "Status", color: "#FFF3CD" },
+                    { key: "totalSeats", label: "Total Seats", color: "#E1D8F0" },
+                    { key: "bookedSeats", label: "Booked Seats", color: "#E1D8F0" },
+                    { key: "totalEarnings", label: "Total Earnings", color: "#E1D8F0" },
+                    { key: "actions", label: "Actions", color: "#F8D7DA" } 
                 ].map(({ key, label, color }) => (
                     <TableCell key={key} sx={{ fontWeight: "bold", backgroundColor: color }}>
                         {label}
@@ -203,56 +227,84 @@ const UpcomingFlights_provider = ({ email="heo" }) => {
         <TableBody>
             {filteredData
                 .sort((a, b) => {
-                    // Move "Missed" flights to the bottom
-                    if (a.newMissedStatusKey === "Missed" && b.newMissedStatusKey !== "Missed") return 1;
-                    if (a.newMissedStatusKey !== "Missed" && b.newMissedStatusKey === "Missed") return -1;
-
-                    // Sort by nearest flight date (earliest first)
-                    return new Date(a.newFlightDateKey) - new Date(b.newFlightDateKey);
+                    if (a.status === "Missed" && b.status !== "Missed") return 1;
+                    if (a.status !== "Missed" && b.status === "Missed") return -1;
+                    return new Date(a.departureDate) - new Date(b.departureDate);
                 })
                 .map((row, rowIndex) => {
-                    const isAmountZero = row.newAmountEarnKey === 0;
-                    const isRefundable = row.newCancellationPolicyKey === "Refundable" && row.newMissedStatusKey !== "Missed";
-                    const isNonRefundablePaid = row.newCancellationPolicyKey === "Non-Refundable" && row.newAmountEarnKey > 0;
+                    // Convert departureDate and arrivalDate to a readable format
+                    const readableDepartureDate = new Date(row.departureDate).toLocaleDateString("en-US", {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    const readableArrivalDate = new Date(row.arrivalDate).toLocaleDateString("en-US", {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    const isRefundable = row.status === "Refundable";
+
+                    const handleDelete = async () => {
+                        try {
+                            await axios.delete(`http://localhost:5000/flight/delete/${row._id}`);
+                            setPopupMessage("Flight deleted successfully");
+                            setPopupType("success");
+                            setRefreshTrigger(prev => prev + 1);
+                        } catch (error) {
+                            console.error("Delete error:", error);
+                            setPopupMessage("Failed to delete flight");
+                            setPopupType("error");
+                        }
+                    };
 
                     return (
-                        <TableRow key={rowIndex} sx={{ backgroundColor: isAmountZero ? "#FFCCCC" : "inherit" }}>
-                            {[
-                                { key: "newFlightKey", color: "#D0E8FF" },
-                                { key: "newAirlineKey", color: "#D0E8FF" },
-                                { key: "newAirplaneModelKey", color: "#D0E8FF" },
-                                { key: "newFlightTypeKey", color: "#D0E8FF" },
-                                { key: "newBookingStartDateKey", color: "#D4EDDA" },
-                                { key: "newAmountEarnKey", color: "#D4EDDA" },
-                                { key: "newDateKey", color: "#FFF3CD" },
-                                { key: "newDepartureKey", color: "#FFF3CD" },
-                                { key: "newDestinationKey", color: "#FFF3CD" },
-                                { key: "newDepartureTimeKey", color: "#FFF3CD" },
-                                { key: "newArrivalTimeKey", color: "#FFF3CD" },
-                                { key: "newFlightDurationKey", color: "#FFF3CD" },
-                                { key: "newLayoverKey", color: "#FFF3CD" },
-                                { key: "newTotalSeatsKey", color: "#F8D7DA" },
-                                { key: "newSeatsBookedKey", color: "#F8D7DA" },
-                                { key: "newMissedStatusKey", color: "#E9ECEF" },
-                                { key: "newCancellationPolicyKey", color: "#E9ECEF" },
-                            ].map(({ key, color }) => (
+                        <TableRow key={rowIndex} sx={{ backgroundColor: isRefundable ? "#D4EDDA" : "inherit" }}>
+                            {[ 
+                                { key: "flightName", color: "#D0E8FF" },
+                                { key: "airlineCode", color: "#D0E8FF" },
+                                { key: "origin", color: "#D4EDDA" },
+                                { key: "destination", color: "#D4EDDA" },
+                                { key: "departureDate", color: "#D4EDDA", value: readableDepartureDate },
+                                { key: "arrivalDate", color: "#D4EDDA", value: readableArrivalDate },
+                                { key: "departureTime", color: "#D4EDDA" },
+                                { key: "arrivalTime", color: "#D4EDDA" },
+                                { key: "status", color: "#FFF3CD" },
+                                { key: "totalSeats", color: "#E1D8F0" },
+                                { key: "bookedSeats", color: "#E1D8F0" },
+                                { key: "totalEarnings", color: "#E1D8F0" }
+                            ].map(({ key, color, value }) => (
                                 <TableCell
                                     key={key}
-                                    sx={{ backgroundColor: isAmountZero ? "#FFAAAA" : color }}
+                                    sx={{ backgroundColor: isRefundable ? "#D4EDDA" : color }}
                                 >
-                                    {key === "newTicketUrlKey" ? (
-                                        <a href={row[key]} target="_blank" rel="noopener noreferrer">View Ticket</a>
-                                    ) : (
-                                        row[key]
-                                    )}
+                                    {value || row[key]}
                                 </TableCell>
                             ))}
+
+                            {/* Actions - Delete Button */}
+                            <TableCell sx={{ backgroundColor: "#F8D7DA" }}>
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    onClick={handleDelete}
+                                >
+                                    Delete
+                                </Button>
+                            </TableCell>
                         </TableRow>
                     );
                 })}
         </TableBody>
     </Table>
 </TableContainer>
+
+
+
 
     
                 {/* Graphs Section */}
@@ -264,7 +316,7 @@ const UpcomingFlights_provider = ({ email="heo" }) => {
                                 data={{
                                     labels: airlines,
                                     datasets: [{
-                                        label: "Total Expenditure By Airline",
+                                        label: "Total Profit By Airline",
                                         data: airlineExpenditure,
                                         backgroundColor: "blue"
                                     }]
@@ -286,7 +338,7 @@ const UpcomingFlights_provider = ({ email="heo" }) => {
                                 data={{
                                     labels: Object.keys(dateExpenditure),
                                     datasets: [{
-                                        label: "Total Expenditure By Date Booked",
+                                        label: "Total Profit By Date Booked",
                                         data: Object.values(dateExpenditure),
                                         borderColor: "green"
                                     }]
@@ -363,6 +415,16 @@ const UpcomingFlights_provider = ({ email="heo" }) => {
                         </div>
                     </div>
                 </div>
+                {popupMessage && (
+                  <Popup 
+                    message={popupMessage} 
+                    type={popupType} 
+                    onClose={() => {
+                      setPopupMessage(null);
+                      setPopupType(null);
+                    }} 
+                  />
+                )}
             </div>
         </>
     );

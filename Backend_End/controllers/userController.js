@@ -56,6 +56,7 @@ exports.signupUser = async (req, res) => {
 
 //User information 
 exports.createOrUpdateUser = async (req, res) => {
+  console.log(req.body);
   const { email, username, phoneNumber, address, dateOfBirth, gender, country, preferredLanguage, image } = req.body;
 
   if (!email) {
@@ -105,7 +106,8 @@ exports.createOrUpdateUser = async (req, res) => {
 
 
 exports.getUserInformation = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.query;
+  console.log('Request received for email:', email);
 
   if (!email) {
     return res.status(400).json({ message: 'Email is required' });
@@ -113,14 +115,16 @@ exports.getUserInformation = async (req, res) => {
 
   try {
     const userInfo = await UserInformation.findOne({ email });
+    console.log('UserInfo:', userInfo);
 
     if (!userInfo) {
-      return res.status(404).json({ message: 'User information not found' });
+      return res.status(401).json({ message: 'User information not found' });
     }
 
     return res.json({ message: 'User information fetched successfully', user: userInfo });
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching user info:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 };
+

@@ -17,7 +17,7 @@
     "emailjs-com": "^3.2.0",
     "express": "^5.1.0",
     "mongodb": "^6.16.0",
-    "mongoose": "^8.13.3",
+    "mongoose": "^8.14.1",
     "nodemailer": "^6.10.1"
   },
   "devDependencies": {

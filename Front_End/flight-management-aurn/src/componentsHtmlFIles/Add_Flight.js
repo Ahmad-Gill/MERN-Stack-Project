@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import "../componentCssFiles/addFligh.scss";
-
+import Popup from "../componentsHtmlFIles/Popup";
 function AddFlight() {
   const email = useSelector((state) => state.user.email);
+          const [popupType, setPopupType] = useState(null);
+  
+          const [popupMessage, setPopupMessage] = useState(null);
   const [flightDetails, setFlightDetails] = useState({
     flightName: "",
     airlineCode: "",
@@ -103,10 +106,12 @@ function AddFlight() {
       const result = await response.json();
   
       if (response.ok) {
-        alert("Flight added successfully!");
+        setPopupMessage("Flight added successfully!");
+        setPopupType("success");
         console.log(result);
       } else {
-        alert("Failed to add flight: " + result.message);
+        setPopupMessage("Failed to add flight: " + result.message);
+        setPopupType("error");
         console.error(result);
       }
     } catch (error) {
@@ -285,6 +290,16 @@ function AddFlight() {
         </div>
         <button type="submit">Add Flight</button>
       </form>
+      {popupMessage && (
+                        <Popup 
+                          message={popupMessage} 
+                          type={popupType} 
+                          onClose={() => {
+                            setPopupMessage(null);
+                            setPopupType(null);
+                          }} 
+                        />
+                      )}
     </div>
   );
 }

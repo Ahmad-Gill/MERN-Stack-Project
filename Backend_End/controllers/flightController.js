@@ -1,7 +1,130 @@
 const Flight = require('../models/Flight');
 const nodemailer = require('nodemailer');
 const emailjs = require('emailjs-com'); 
+const Booking = require("../models/bookedFlight");
 
+const getBookingsByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const bookings = await Booking.find({ email });
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: "No bookings found for this email." });
+    }
+
+    res.status(200).json({ message: "Bookings fetched successfully", bookings });
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+const saveBooking = async (req, res) => {
+  try {
+    const {
+      email,
+      flightId,
+      flightNo,
+      airline,
+      departure,
+      departure_time,
+      departure_date,
+      destination,
+      arrival_date,
+      boarding_time,
+      selectedClass,
+      seatPreference,
+      seatCount,
+      mealPreference,
+      totalAmount,
+    } = req.body;
+
+    // Basic validation
+    if (!email || !flightId || !selectedClass || !seatPreference || !seatCount || !totalAmount) {
+      return res.status(400).json({ message: "Required booking details missing." });
+    }
+
+    // Prevent duplicate booking
+    const existingBooking = await Booking.findOne({ email, flightId });
+    if (existingBooking) {
+      return res.status(409).json({ message: "You have already booked this flight." });
+    }
+
+    // Save booking
+    const newBooking = new Booking({
+      email,
+      flightId,
+      flightNo,
+      airline,
+      departure,
+      departure_time,
+      departure_date,
+      destination,
+      arrival_date,
+      boarding_time,
+      selectedClass,
+      seatPreference,
+      seatCount,
+      mealPreference,
+      totalAmount,
+    });
+
+    await newBooking.save();
+
+    // Update Flight document
+    const flight = await Flight.findById(flightId);
+    if (!flight) {
+      return res.status(404).json({ message: "Flight not found." });
+    }
+
+    // Check seat availability before booking
+    const seatCategory = flight.seats[selectedClass][seatPreference];
+    if (seatCategory.booked + seatCount > seatCategory.total) {
+      return res.status(400).json({ message: "Not enough available seats." });
+    }
+
+    // Update booked seats count
+    seatCategory.booked += seatCount;
+
+    // Update pricing and earnings
+    const seatPrice = flight.pricing[selectedClass][seatPreference];
+    const earnings = seatPrice * seatCount;
+
+    // Update earnings for the selected class
+    flight.totalEarnings += earnings;
+
+    // Save the updated flight document
+    await flight.save();
+
+    res.status(201).json({
+      message: "Booking saved and flight updated successfully.",
+      booking: newBooking,
+    });
+
+  } catch (error) {
+    console.error("Error saving booking or updating flight:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+
+const deleteFlight = async (req, res) => {
+  try {
+    const { flightId } = req.params; // Get flight ID from the URL params
+
+    // Find the flight by ID and delete it
+    const deletedFlight = await Flight.findByIdAndDelete(flightId);
+
+    if (!deletedFlight) {
+      return res.status(404).json({ message: 'Flight not found' });
+    }
+
+    // Return a success response
+    return res.status(200).json({ message: 'Flight deleted successfully', deletedFlight });
+  } catch (error) {
+    console.error("Error deleting flight:", error);
+    return res.status(500).json({ message: 'Server error while deleting flight', error });
+  }
+};
 const getSpecificFlight = async (req, res) => {
   try {
     const { email } = req.query; // ✅ FIXED: use query for GET
@@ -129,13 +252,16 @@ const createFlight = async (req, res) => {
       arrivalDate,
       departureTime,
       arrivalTime,
+      totalEarnings:0,
       seats: formattedSeats,
       pricing,
       foodOptions: foodOptions || defaultFoodOptions,
-      status
+      status,
+      
     });
 
     const savedFlight = await newFlight.save();
+    console.log(newFlight)
     res.status(201).json({
       message: "Flight created successfully",
       flight: savedFlight
@@ -204,9 +330,66 @@ Total Amount: $${price}
   }
 };
 
+const getAllFlights = async (req, res) => {
+  try {
+    // Fetch all flights from the Flight model
+    const flights = await Flight.find();
+
+    if (!flights || flights.length === 0) {
+      return res.status(404).json({ message: 'No flights found' });
+    }
+
+    const flightsWithStats = flights.map(flight => {
+      const computeStats = (seatObj = {}) => {
+        const total = (seatObj.window?.total || 0) + (seatObj.middle?.total || 0) + (seatObj.aisle?.total || 0);
+        const booked = (seatObj.window?.booked || 0) + (seatObj.middle?.booked || 0) + (seatObj.aisle?.booked || 0);
+        return { totalSeats: total, bookedSeats: booked };
+      };
+
+      const computeProfit = (seatObj = {}, pricing = {}) => {
+        return (
+          (seatObj.window?.booked || 0) * (pricing.window || 0) +
+          (seatObj.middle?.booked || 0) * (pricing.middle || 0) +
+          (seatObj.aisle?.booked || 0) * (pricing.aisle || 0)
+        );
+      };
+
+      const classes = ['business', 'economy', 'firstClass', 'premium'];
+      const seatStats = {};
+      const earnings = {};
+      let totalEarnings = 0;
+
+      for (const seatClass of classes) {
+        seatStats[seatClass] = computeStats(flight.seats[seatClass]);
+        earnings[seatClass] = computeProfit(flight.seats[seatClass], flight.pricing[seatClass]);
+        totalEarnings += earnings[seatClass];
+      }
+
+      return {
+        ...flight._doc,
+        seatStats,
+        earnings,
+        totalEarnings
+      };
+    });
+
+    return res.status(200).json({
+      message: 'All flights fetched successfully',
+      flights: flightsWithStats
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 // Export both functions
 module.exports = {
   createFlight,
   sendEmail,
   getSpecificFlight,
+  deleteFlight,
+  getAllFlights,
+  getBookingsByEmail,
+  saveBooking,
 };

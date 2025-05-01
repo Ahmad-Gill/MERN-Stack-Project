@@ -35,8 +35,8 @@ const initialState = {
     name: "",
     email: "m.ahmadgill01@gmail.com",
     isActive: false,
-    isCustomer: false,
-    isProvider: true,
+    isCustomer: true,
+    isProvider: false,
 };
 
 // Redux Slice
