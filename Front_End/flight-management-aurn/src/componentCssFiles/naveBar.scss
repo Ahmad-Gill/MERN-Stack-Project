@@ -16,7 +16,7 @@ $TextColor: black;
   font-size: 18px;
   color: $TextColor;
   transition: color 0.3s;
-  margin-left: 20px;
+  margin-left: 30px;
 }
 .brightness-btn:hover {
   background-color: transparent;
@@ -85,18 +85,22 @@ body.dark-mode .nav-links {
   left: 0;
   right: 0;
   z-index: 100000;
+  background-color: rgba(255, 255, 255, 0.2); /* translucent white */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* for Safari */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for definition */
 
 }
 .nav-links {
   display: flex;
   gap: 15px;
-  margin-left: 20px;
+  margin-left: 40px;
   font-weight: bold;
 
 }
 .nav-links a {
   text-decoration: none;
-  font-size: 16px;
+  font-size: 20px;
   color: $TextColor;
   font-weight: bold;
 
@@ -202,6 +206,7 @@ body.dark-mode .nav-links {
   align-items: center;
   justify-content: center;
   padding: 5px;
+  margin-left: 20px;
 }
 
 .profile-preview {
@@ -228,6 +233,7 @@ body.dark-mode .nav-links {
   border: none;
   cursor: pointer;
   position: relative;
+  margin-left: 10px;
 }
 .notification-icon {
   font-size: 24px;
@@ -288,7 +294,7 @@ body.dark-mode .nav-links {
     background: transparent !important;
   }
   .search-container {
-    display: none;
+    display: none !important;
   }
   .nav-links {
     position: absolute;
@@ -404,4 +410,5 @@ body.dark-mode .nav-links {
   font-size: 12px;
   color: #888;
 }
+
 

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Popup from "./Popup";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import PlaneLoading from "../componentsHtmlFIles/PlaneLoading";
 
 function Flight_Details() {
   const user = useSelector((state) => state.user);
@@ -20,21 +21,22 @@ function Flight_Details() {
 
   const [popupType, setPopupType] = useState(null);
   const [popupMessage, setPopupMessage] = useState(null);
+  const [count, setCount] = useState(0);
   const [flight_details, setFlight_details] = useState({
     class: "",
     seat_prefer: "",
-    seat_count: "",  // Number of seats selected
+    seat_count: "", 
     meal_prefer: "",
   });
   const [matchedFlight, setMatchedFlight] = useState(null);
+   const [isLoading, setIsLoading] = useState(false);
   const [availableSeatTypes, setAvailableSeatTypes] = useState([]);
   const [maxSeatsAvailable, setMaxSeatsAvailable] = useState(0);
   const [pricingData, setPricingData] = useState({});
   const [foodOptions, setFoodOptions] = useState([]);
-  const [seatPrice, setSeatPrice] = useState(0); // Per-seat price
-
-  // Fetch flight data
+  const [seatPrice, setSeatPrice] = useState(0); 
   useEffect(() => {
+    setIsLoading(true);
     fetch("http://localhost:5000/flight/geetAll")
       .then((response) => response.json())
       .then((data) => {
@@ -48,11 +50,11 @@ function Flight_Details() {
             setFoodOptions(availableFoods);
           }
         }
+        setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching flight data:", error));
-  }, [id]);
-
-  // Update seat types and reset when class changes
+      setIsLoading(false);
+  }, [id,count]);
   useEffect(() => {
     if (matchedFlight && flight_details.class) {
       const selectedClass = flight_details.class.toLowerCase();
@@ -74,8 +76,6 @@ function Flight_Details() {
       setMaxSeatsAvailable(0);
     }
   }, [matchedFlight, flight_details.class]);
-
-  // Update seat count and pricing when seat type changes
   useEffect(() => {
     if (matchedFlight && flight_details.class && flight_details.seat_prefer) {
       const selectedClass = flight_details.class.toLowerCase();
@@ -89,13 +89,15 @@ function Flight_Details() {
 
       setFlight_details((prev) => ({
         ...prev,
-        seat_count: "", // reset seat count on change
+        seat_count: "", 
       }));
     }
   }, [matchedFlight, flight_details.class, flight_details.seat_prefer]);
 
   function handle_Click() {
+    setIsLoading(true);
     const { class: flightClass, seat_prefer, seat_count, meal_prefer } = flight_details;
+  
     if (flightClass && seat_prefer && seat_count && meal_prefer) {
       const bookingData = {
         email: user.email,
@@ -114,26 +116,52 @@ function Flight_Details() {
         mealPreference: meal_prefer,
         totalAmount: seatPrice * parseInt(seat_count),
       };
-console.log(bookingData)
+  
+      console.log('Sending booking data:', bookingData);
+  
       fetch("http://localhost:5000/flight/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingData),
       })
-        .then((response) => response.json())
-        .then((data) => {
-          setPopupMessage("Payment confirmed successfully!");
-          setPopupType("success");
+        .then(async (response) => {
+          const data = await response.json();
+          setIsLoading(false);
+  
+          if (response.ok) {
+            setPopupMessage(data.message || "Payment confirmed successfully!");
+            setPopupType("success");
+  
+            setFlight_details({
+              class: "",
+              seat_prefer: "",
+              seat_count: "",
+              meal_prefer: "",
+            });
+            setAvailableSeatTypes([]);
+            setMaxSeatsAvailable(0);
+            setSeatPrice(0);
+            setFoodOptions([]);
+            setCount((prevCount) => prevCount + 1);
+          } else {
+            setPopupMessage(data.message || "Booking failed. Please try again.");
+            setPopupType("error");
+            setIsLoading(false);
+          }
         })
         .catch((error) => {
+          console.error("Error:", error);
           setPopupMessage("Something went wrong. Please try again.");
           setPopupType("error");
+          setIsLoading(false);
         });
     } else {
       setPopupMessage("Please fill all the details.");
       setPopupType("error");
+      setIsLoading(false);
     }
   }
+  
 
   function handle_Change(event) {
     const { name, value } = event.target;
@@ -144,6 +172,8 @@ console.log(bookingData)
   }
 
   return (
+    <>
+    {isLoading && <PlaneLoading isLoading={isLoading} />} 
     <div className="Book_Ticket_Container">
       <h1 id="ticket">Booking Details</h1>
       <div id="details_info">
@@ -181,7 +211,7 @@ console.log(bookingData)
           </option>
         );
       }
-      return null; // Don't show the option if there are no available seats
+      return null;
     })}
   </select>
 </div>
@@ -266,6 +296,7 @@ console.log(bookingData)
         />
       )}
     </div>
+    </>  
   );
 }
 

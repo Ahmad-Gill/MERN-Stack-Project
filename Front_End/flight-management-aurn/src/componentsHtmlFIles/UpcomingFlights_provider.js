@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { fetchConsumerHistory } from "./flight_provider_Get";
 import { Bar, Line, Pie, Scatter, Doughnut, Radar,Bubble , PolarArea } from "react-chartjs-2";
 import { useSelector, useDispatch } from "react-redux";
-import PlaneLoading from "./PlaneLoading";   // for ANimation
+import PlaneLoading from "./PlaneLoading";  
 import { setName, setEmail, setActiveStatus, setCustomerStatus, setProviderStatus, resetUser } from "../store";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Tooltip, Legend, RadialLinearScale } from "chart.js";
 import {
@@ -12,18 +12,19 @@ import {
 import axios from "axios";
 import Popup from "../componentsHtmlFIles/Popup";
 import MenuIcon from "@mui/icons-material/Menu";
-import "../componentCssFiles/flight_consuer.scss";
+import "../componentCssFiles/pflight_consuer.scss";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Tooltip, Legend, RadialLinearScale);
 
 const UpcomingFlights_provider = () => {
+     const name = useSelector((state) => state.user.name);
     const [data, setData] = useState([]);
         const [popupType, setPopupType] = useState(null);
         const [refreshTrigger, setRefreshTrigger] = useState(0);
 
         const [popupMessage, setPopupMessage] = useState(null);
-      const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
-      const user = useSelector((state) => state.user);       //REdux comands
+      const [isLoading, setIsLoading] = useState(false);   
+      const user = useSelector((state) => state.user);      
       const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
     const [filteredData, setFilteredData] = useState([]);
     const [filters, setFilters] = useState({});
@@ -33,8 +34,8 @@ const UpcomingFlights_provider = () => {
     const generateRandomColors = (num) => {
         const colors = [];
         for (let i = 0; i < num; i++) {
-            const hue = Math.floor(Math.random() * 360); // Full spectrum of colors
-            const saturation = 70 + Math.random() * 30; // Keep colors vibrant (70% - 100%)
+            const hue = Math.floor(Math.random() * 360); 
+            const saturation = 70 + Math.random() * 30; 
             const lightness = 50 + Math.random() * 20; // Avoid too dark or too light shades (50% - 70%)
             colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
         }
@@ -84,7 +85,6 @@ const UpcomingFlights_provider = () => {
         
                 setData(flights);
                 setFilteredData(flights);
-                console.log(flights);
         
                 const extractUniqueValues = (key) => [...new Set(flights.map(item => item[key]))];
         
@@ -126,7 +126,7 @@ const UpcomingFlights_provider = () => {
         
                 setIsLoading(false);
             }).catch(error => {
-                console.error("Error fetching data:", error);
+               
                 setIsLoading(false);
             });
         }, [user.email, refreshTrigger]);
@@ -152,23 +152,13 @@ const UpcomingFlights_provider = () => {
         filterData(); // Trigger filtering when filters or data change
     }, [filters, data]);
     
-    const handleRefund = (row) => {
-        alert(`Processing refund for flight: ${row.flightName}`);
-    };
-    
-    const handlePayment = (row) => {
-        console.log("Processing payment for:", row);
-    
-        // Example: Redirect to a payment page or trigger a payment API
-        alert(`Redirecting to payment for flight: ${row.flightName}`);
-    };
-    
+
     
     return (
         <>
             {isLoading && <PlaneLoading isLoading={isLoading} />} {/* For Animation */}
             <div className="analytics-container">
-                <h1>Upcoming Flight Details for {user.email}</h1>
+                <h1>Upcoming Flight Details for {name}</h1>
                 <div className="filter-button-container" onClick={() => setDrawerOpen(true)}>
                     <span>Filter</span>
                     <IconButton>
@@ -251,17 +241,23 @@ const UpcomingFlights_provider = () => {
 
                     const handleDelete = async () => {
                         try {
-                            await axios.delete(`http://localhost:5000/flight/delete/${row._id}`);
-                            setPopupMessage("Flight deleted successfully");
-                            setPopupType("success");
-                            setRefreshTrigger(prev => prev + 1);
+                            if (row.bookedSeats <= 0) {
+                                await axios.delete(`http://localhost:5000/flight/delete/${row._id}`);
+                                setPopupMessage("Flight deleted successfully");
+                                setPopupType("success");
+                                setRefreshTrigger(prev => prev + 1);
+                            } else {
+                                setPopupMessage("Flight deletion failed: people already booked.");
+                                setPopupType("error");
+                            }
                         } catch (error) {
-                            console.error("Delete error:", error);
+                       
                             setPopupMessage("Failed to delete flight");
                             setPopupType("error");
                         }
                     };
-
+                    
+                    
                     return (
                         <TableRow key={rowIndex} sx={{ backgroundColor: isRefundable ? "#D4EDDA" : "inherit" }}>
                             {[ 
@@ -302,11 +298,6 @@ const UpcomingFlights_provider = () => {
         </TableBody>
     </Table>
 </TableContainer>
-
-
-
-
-    
                 {/* Graphs Section */}
                 <div className="container charts-container">
                     <div className="row">

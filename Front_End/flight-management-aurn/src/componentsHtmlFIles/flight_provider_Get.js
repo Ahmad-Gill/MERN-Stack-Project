@@ -1,8 +1,8 @@
-export const fetchConsumerHistory = async (email) => {
-    console.log(`Fetching history for: ${email}`);
+export const fetchConsumerHistory = async () => {
+    console.log(`Fetching full booking history...`);
 
     try {
-        const response = await fetch(`http://localhost:5000/flight/getAddedFlights?email=${email}`);
+        const response = await fetch(`http://localhost:5000/flight/geetAll`);
         
         if (!response.ok) {
             throw new Error('Network response was not ok');

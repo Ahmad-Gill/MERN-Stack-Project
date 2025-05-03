@@ -1,101 +1,154 @@
 .admin-chart {
-    padding: 80px;
-    font-family: 'Arial', sans-serif;
-    max-width: 900px;
-    margin: 0 auto;
-  
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 28px;
-      color: #333;
-    }
-  
-    label {
-      font-weight: bold;
-      margin-right: 10px;
-    }
-  
-    select {
-      padding: 8px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      min-width: 250px;
-      margin-bottom: 20px;
-      font-size: 16px;
-    }
-  
-    .messages {
-      border: 1px solid #ddd;
-      padding: 15px;
-      height: 300px;
-      overflow-y: auto;
-      margin-top: 20px;
-      margin-bottom: 20px;
-      border-radius: 5px;
-  
-      .message {
-        margin-bottom: 10px;
-        padding: 8px;
-        border-radius: 5px;
-  
-        strong {
-          color: #007bff;
-        }
-      }
-    }
-  
-    textarea {
-      width: 100%;
-      min-height: 80px;
-      padding: 10px;
-      font-size: 15px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-      resize: vertical;
-    }
-  
-    button {
-      margin-top: 10px;
-      background-color: #007bff;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-  
-      &:hover {
-        background-color: #0056b3;
-      }
-    }
-  }
-  
+  padding: 80px;
+  max-width: 900px;
+  margin: 0 auto;
+  margin-top: 5%;
 
-  .select-user-container {
-    margin: 20px 0;
-  
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 8px;
-      color: black; // Label text color
-    }
-  
-    select {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      color: black; // Selected text color
-      background-color: white; // Background color
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      outline: none;
-  
-      option {
-        color: black; // Options text color
-        background-color: white;
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+  }
+
+  label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    min-width: 250px;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+
+  .messages {
+    border: 1px solid #ddd;
+    padding: 15px;
+    height: 300px;
+    overflow-y: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+
+    .message {
+      display: inline-block;
+      max-width: 70%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      word-wrap: break-word;
+
+      strong {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 4px;
       }
     }
+
+    .user-message {
+      align-self: flex-start;
+      background-color: #f1f1f1;
+      color: #333;
+      text-align: left;
+      border-top-left-radius: 0;
+    }
+
+    .admin-response {
+      align-self: flex-end;
+      background-color: #0044cc;
+      color: white;
+      text-align: right;
+      border-top-right-radius: 0;
+    }
   }
-  
+
+  textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+
+  button {
+    margin-top: 10px;
+    background-color: darkblue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #00008b;
+    }
+  }
+
+  .error {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+}
+
+.select-user-container {
+  margin: 20px 0;
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: black;
+  }
+
+  select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: black;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+
+    option {
+      color: black;
+      background-color: white;
+    }
+  }
+}
+.clickme {
+  background-color: #00008b; // dark blue
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+  margin-top: 12px;
+
+  &:hover {
+    background-color: #00007a; // slightly darker blue
+  }
+
+  &:focus,
+  &:active {
+    background-color: #000070;
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}

@@ -1,6 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../componentCssFiles/naveBar.scss";
-import { FaSearch, FaBars, FaTimes, FaSun, FaMoon, FaBell } from "react-icons/fa";
+import {
+  FaSearch,
+  FaBars,
+  FaTimes,
+  FaSun,
+  FaMoon,
+  FaBell,
+} from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Notifications from "../componentsHtmlFIles/Notifications";
 import { useUser } from "../componentsHtmlFIles/UserContext";
@@ -9,11 +16,14 @@ import { useSelector, useDispatch } from "react-redux";
 
 function NveBar() {
   const dispatch = useDispatch();
-  const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
+  const { isActive, isCustomer, isProvider } = useSelector(
+    (state) => state.user
+  );
   const { profileImage } = useUser();
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
+  const user = useSelector((state) => state.user);
   const [results, setResults] = useState([]);
   const [allFlights, setAllFlights] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,38 +34,34 @@ function NveBar() {
   const searchRef = useRef(null);
   const notificationsRef = useRef(null);
 
-  // Fetch all flights once when component mounts
+  // Fetch all flights
   useEffect(() => {
     const fetchFlights = async () => {
       try {
         const res = await fetch("http://localhost:5000/flight/geetAll");
         const data = await res.json();
-        // console.log("Fetched flights:", data);
         if (data.message === "All flights fetched successfully") {
           setAllFlights(data.flights);
         }
       } catch (error) {
-        // console.error("Error fetching flights:", error);
+        console.error("Error fetching flights:", error);
       }
     };
 
     fetchFlights();
   }, []);
 
-  // Filter flights when user types
+  // Search filter
   const handleType = (e) => {
     const query = e.target.value.trim();
-    setSearch(query);  // Update the search query state
-    // console.log("Search query:", query); // Log search query
-  
+    setSearch(query);
+
     if (query === "") {
-      setResults([]);  // Clear results if query is empty
+      setResults([]);
       return;
     }
-  
-    // Filter flights based on query
+
     const matches = allFlights.filter((flight) => {
-      // console.log("Filtering flight:", flight); // Log each flight being filtered
       return (
         flight.flightName.toLowerCase().includes(query.toLowerCase()) ||
         flight.airlineCode.toLowerCase().includes(query.toLowerCase()) ||
@@ -63,18 +69,13 @@ function NveBar() {
         flight.destination.toLowerCase().includes(query.toLowerCase())
       );
     });
-  
-    // console.log("Filtered results:", matches); // Log filtered results before setting state
+
     setResults(matches);
   };
 
-  useEffect(() => {
-    // console.log("Updated results:", results);
-  }, [results]);  // This hook runs whenever `results` state changes
-  
-  const handleSelect = (flightName) => {
+  const handleSelect = (flightId) => {
     setResults([]);
-    navigate(`/Book_tickets?id=${flightName}`);
+    navigate(`/Book_tickets?id=${flightId}`);
   };
 
   const toggleBrightness = () => {
@@ -82,12 +83,14 @@ function NveBar() {
     document.body.classList.toggle("dark-mode");
   };
 
-  // Close search and notification panels when clicking outside
+  // Close panels when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        (searchRef.current && !searchRef.current.contains(event.target)) &&
-        (notificationsRef.current && !notificationsRef.current.contains(event.target))
+        searchRef.current &&
+        !searchRef.current.contains(event.target) &&
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target)
       ) {
         setResults([]);
         setSearch("");
@@ -105,40 +108,72 @@ function NveBar() {
     <div className="navBArMain">
       {/* Logo */}
       <div className="logo">
-        <Link to="/"><img src="/favicon.ico" alt="Logo" /></Link>
+        <Link to="/">
+          <img src="/favicon.ico" alt="Logo" />
+        </Link>
       </div>
 
       {/* Navigation Links */}
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
-        <Link to="/" onClick={() => setMenuOpen(false)}>Home</Link>
+  <Link to="/" onClick={() => setMenuOpen(false)}>
+    Home
+  </Link>
 
-        {isCustomer && isActive && (
-          <Link to="/Analytics_consumer" onClick={() => setMenuOpen(false)}>Analytics</Link>
-        )}
-        {isProvider && isActive && (
-          <>
-            <Link to="/Analytics_provider" onClick={() => setMenuOpen(false)}>Analytics</Link>
-            <Link to="/UpcomingFlights_provider" onClick={() => setMenuOpen(false)}>Flights</Link>
-          </>
-        )}
-        {isCustomer && isActive && (
-          <Link to="/flights" onClick={() => setMenuOpen(false)}>Flights</Link>
-        )}
-        {!isCustomer && isActive && !isProvider && (
-          <>
-            <Link to="/AnalyticsAdmin" onClick={() => setMenuOpen(false)}>Analytics</Link>
-            <Link to="/UpcomingFlights_admin" onClick={() => setMenuOpen(false)}>Flights Handling</Link>
-            <Link to="/AdminChart" onClick={() => setMenuOpen(false)}>Queries</Link>
-          </>
-        )}
-        {isActive ? (
-          <Link to="/" onClick={() => { dispatch(resetUser()); setMenuOpen(false); }}>LogOut</Link>
-        ) : (
-          <Link to="/auth" onClick={() => setMenuOpen(false)}>LogIn</Link>
-        )}
-      </div>
+  {isCustomer && isActive && (
+    <>
+      <Link to="/Analytics_consumer" onClick={() => setMenuOpen(false)}>
+        Analytics
+      </Link>
+      <Link to="/flights" onClick={() => setMenuOpen(false)}>
+        Flights
+      </Link>
+    </>
+  )}
 
-      {/* Search Container */}
+  {isProvider && isActive && (
+    <>
+      <Link to="/Analytics_provider" onClick={() => setMenuOpen(false)}>
+        Analytics
+      </Link>
+      <Link to="/UpcomingFlights_provider" onClick={() => setMenuOpen(false)}>
+        Flights
+      </Link>
+    </>
+  )}
+
+  {!isCustomer && !isProvider && isActive && (
+    <>
+      <Link to="/AnalyticsAdmin" onClick={() => setMenuOpen(false)}>
+        Providers
+      </Link>
+      <Link to="/UpcomingFlights_admin" onClick={() => setMenuOpen(false)}>
+        Customers
+      </Link>
+      <Link to="/AdminChart" onClick={() => setMenuOpen(false)}>
+        Queries
+      </Link>
+    </>
+  )}
+
+  {isActive ? (
+    <Link
+      to="/"
+      onClick={() => {
+        dispatch(resetUser());
+        setMenuOpen(false);
+      }}
+    >
+      LogOut
+    </Link>
+  ) : (
+    <Link to="/auth" onClick={() => setMenuOpen(false)}>
+      LogIn
+    </Link>
+  )}
+</div>
+
+
+      {/* Search */}
       <div className="search-container" ref={searchRef}>
         <div className="search-box">
           {isCustomer ? (
@@ -158,42 +193,45 @@ function NveBar() {
           <FaSearch className="search-icon" />
         </div>
 
-        {/* Displaying results below search */}
-        {isCustomer && results.length > 0 && (
-  <div className="search-results-container">
-    <ul className="results-list">
-      {results.map((flight) => (
-        <li key={flight._id} onClick={() => handleSelect(flight._id)}>
-          <div className="flight-name">
-            {flight.flightName} ({flight.airlineCode})
+        {/* Search Results */}
+        {isCustomer && isActive && results.length > 0 && (
+          <div className="search-results-container">
+            <ul className="results-list">
+              {results.map((flight) => (
+                <li key={flight._id} onClick={() => handleSelect(flight._id)}>
+                  <div className="flight-name">
+                    {flight.flightName} ({flight.airlineCode})
+                  </div>
+                  <div className="origin-destination">
+                    {flight.origin} → {flight.destination}
+                  </div>
+                  <div className="departure-time">
+                    Departs at: {flight.departureTime}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="origin-destination">
-            {flight.origin} → {flight.destination}
-          </div>
-          <div className="departure-time">
-            Departs at: {flight.departureTime}
-          </div>
-          
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
-
+        )}
       </div>
 
       {/* Notification Button */}
-      <button className="notification-btn" onClick={() => setPanelOpen(!panelOpen)}>
+      <button
+        className="notification-btn"
+        onClick={() => setPanelOpen(!panelOpen)}
+      >
         <FaBell className="notification-icon" />
         {showNotifications && <span className="notification-dot"></span>}
       </button>
 
       {/* Notification Panel */}
-      {panelOpen && (
-        <div className="notifications-panel" ref={notificationsRef}>
-          <Notifications />
-        </div>
-      )}
+      {panelOpen && isActive &&(
+  <div className="notifications-panel" ref={notificationsRef}>
+    <Notifications email={user.email} />
+  </div>
+)}
+
+
 
       {/* Dark Mode Toggle */}
       <button className="brightness-btn" onClick={toggleBrightness}>
@@ -205,20 +243,23 @@ function NveBar() {
         {menuOpen ? <FaTimes /> : <FaBars />}
       </button>
 
-      {/* User Profile */}
+      {/* Profile Button */}
       <button
         className="profile-btn"
         onClick={() => {
-          if (isActive && isCustomer) {
-            navigate("/consumerProfile", { state: { email: "m.ahmadgill01@gmai.com" } });
-          } else if (isActive && isProvider) {
-            navigate("/providerProfile", { state: { email: "m.ahmadgill01@gmai.com" } });
-          } else if (isActive) {
-            navigate("/adminProfile", { state: { email: "m.ahmadgill01@gmai.com" } });
-          }
+          const email = "m.ahmadgill01@gmai.com";
+          if (isActive && isCustomer) navigate("/consumerProfile", { state: { email } });
+          else if (isActive && isProvider) navigate("/providerProfile", { state: { email } });
+          else if (isActive) navigate("/adminProfile", { state: { email } });
         }}
       >
-        {profileImage && <img src={profileImage} alt="Profile Preview" className="profile-preview" />}
+        {profileImage && (
+          <img
+            src={profileImage}
+            alt="Profile Preview"
+            className="profile-preview"
+          />
+        )}
       </button>
     </div>
   );

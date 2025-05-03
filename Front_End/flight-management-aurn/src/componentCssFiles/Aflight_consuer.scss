@@ -1,0 +1,353 @@
+$backgroundColor: white;
+$primaryColor:  darkblue;
+$TextColor: black;
+.analytics-container {
+    display: flex;
+    margin-top: 80px;
+    flex-direction: column;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    overflow-x: auto;
+    padding: 16px;
+}
+
+.table-container {
+    margin-top: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.table-container th {
+    font-weight: bold;
+    color: $primaryColor;
+    background-color: white!important;
+}
+
+.table-container tr:hover {
+    background-color: #f1f8ff;
+}
+
+.filter-container {
+    padding: 20px;
+    margin-top: 35% !important; /* <-- keep only this */
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    color: black !important;
+    gap: 15px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    max-width: 350px;
+    margin-bottom: 1% !important;
+  }
+  
+
+.filter-container h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    color: black !important;
+    margin-bottom: 10px;
+}
+
+.filter-container div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    padding: 5px 0;
+}
+
+.filter-container label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: black !important;
+}
+
+.filter-container .MuiSelect-root {
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 8px 12px !important;
+    font-size: 1rem !important;
+}
+
+
+.MuiFormControl-root,
+.MuiSelect-root,
+.MuiInputBase-root {
+    width: 100% !important;
+}
+
+.MuiButton-root {
+    margin-top: 10px;
+    font-weight: bold;
+    text-transform: none;
+    width: 100%;
+}
+
+.MuiDrawer-paper {
+    width: 100% !important;
+    max-width: 350px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    border-left: 4px solid $primaryColor;
+    box-shadow: -5px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
+.apply-button {
+    margin-top: 15px;
+    background-color: $primaryColor;
+    color: white !important;
+    padding: 14px;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 17px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.apply-button:hover {
+    background-color:$primaryColor;
+}
+
+.menu-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: $primaryColor;
+    color: white !important;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.menu-button:hover {
+    background: $primaryColor;
+}
+
+.filter-button-container {
+    margin-top: 200px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    background-color: #ddd !important;
+    gap: 8px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+.chart-box {
+    margin-bottom: 20px;  // Adds spacing between charts
+}
+
+.chart-container {
+    width: 100%;
+    height: 400px;  // Set a fixed height
+    min-height: 300px;
+}
+
+
+.filter-button-container:hover {
+    color: $primaryColor;
+}
+body.dark-mode .summary-container{
+    box-shadow: 0 4px 10px rgb(255, 255, 255);
+}
+.summary-container {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.charts-container {
+    padding: 20px;
+    margin-top: 100px;
+    display: flex;
+    flex-wrap: wrap; /* Ensure items wrap onto the next line if needed */
+    gap: 3000px; /* Add horizontal gap between items */
+    justify-content: space-between;
+}
+
+.chart-box {
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    height: 520px;
+    width: 45%;
+    margin-bottom: 40px;
+}
+
+
+.chart-box canvas {
+    width: 100% !important;
+    background-color: white!important;
+    height: 470px !important;
+}
+
+body.dark-mode .chart-box {
+    color: white;
+    box-shadow: 0 4px 10px rgb(0, 0, 0);
+}
+
+@media (max-width: 1200px) {
+    .chart-box {
+        width: 48%;
+        height: 500px;
+    }
+}
+
+@media (max-width: 992px) {
+    .chart-box {
+        width: 100%;
+        height: 480px;
+        margin-bottom: 50px;
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-box {
+        width: 100%;
+        height: 420px;
+        padding: 25px;
+        margin-bottom: 50px;
+    }
+}
+
+@media (max-width: 400px) {
+    .MuiDrawer-paper {
+        max-width: 100% !important;
+    }
+
+    .filter-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+}
+
+.analytics-container .filter-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    cursor: pointer;
+    background: white!important;
+    color: black;
+    padding: 8px;
+    border-radius: 5px;
+    width: fit-content;
+}
+
+.analytics-container .table-container {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+.analytics-container th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.analytics-container th {
+    font-weight: bold;
+
+}
+
+.analytics-container .MuiTableCell-head {
+    white-space: nowrap;
+}
+
+
+
+
+@media (max-width: 768px) {
+    .charts-container {
+        width: 100% !important;
+        padding: 0 10px; /* Add slight padding for better spacing */
+        display: flex;
+        flex-direction: column; /* Stack charts vertically */
+        gap: 20px; /* Add spacing between charts */
+    }
+
+    .chart-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 10px 0; /* Add spacing */
+    }
+
+    canvas {
+        width: 100% !important; /* Stretch width */
+        height: 350px !important; /* Increase height to avoid cropping */
+    }
+
+    .bubble-chart {
+        display: none !important; /* Hide the Bubble chart */
+    }
+    .line-chart canvas {
+        height: 600px !important; /* Increase height */
+    }
+}
+@media (max-width: 768px) {
+    .line-chart {
+        height: 600px !important; /* Increase height of container */
+    }
+
+    .line-chart canvas {
+        height: 600px !important; /* Force canvas height */
+    }
+    .filter-button-container {
+        margin-top: 235px;
+    }
+}
+
+@media (max-width: 600px) {
+    .table-container {
+      margin: 10px 0;
+    }
+  
+    .table-container th,
+    .table-container td {
+      padding: 8px 12px;
+    }
+  }

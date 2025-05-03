@@ -1,4 +1,5 @@
 $backgroundColor: white;
+$backgroundColor: white;
 $primaryColor:  darkblue;
 $TextColor: black;
 .analytics-container {
@@ -46,7 +47,7 @@ $TextColor: black;
 
 .filter-container {
     padding: 20px;
-    margin-top: 700px!important;
+    margin-top: 450%!important;
     width: 350px;
     display: flex;
     flex-direction: column;
@@ -56,6 +57,7 @@ $TextColor: black;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
     margin-top: 50px;
     max-width: 350px;
+    margin-bottom: 1%!important;
 }
 
 .filter-container h3 {
@@ -340,3 +342,13 @@ body.dark-mode .chart-box {
     }
 }
 
+@media (max-width: 600px) {
+    .table-container {
+      margin: 10px 0;
+    }
+  
+    .table-container th,
+    .table-container td {
+      padding: 8px 12px;
+    }
+  }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { fetchConsumerHistory } from "../componentsHtmlFIles/Analytics_consumer_Get";
+import { fetchConsumerHistory } from "../componentsHtmlFIles/flight_consumer_Get";
 import { Bar, Line, Pie, Scatter, Doughnut, Radar,Bubble , PolarArea } from "react-chartjs-2";
 import { useSelector, useDispatch } from "react-redux";
 import PlaneLoading from "../componentsHtmlFIles/PlaneLoading";   // for ANimation
@@ -10,20 +10,14 @@ import {
     Select, MenuItem, Drawer, Button, IconButton
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import "../componentCssFiles/analytics_consuer.scss";
+import "../componentCssFiles/Aflight_consuer.scss";
+import axios from "axios";
+import Popup from "../componentsHtmlFIles/Popup";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Tooltip, Legend, RadialLinearScale);
 
 const AnalyticsConsumer = ({ email }) => {
-    const [data, setData] = useState([]);
-      const [isLoading, setIsLoading] = useState(false);    // set isLoading for animation
-      const user = useSelector((state) => state.user);       //REdux comands
-      const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
-    const [filteredData, setFilteredData] = useState([]);
-    const [filters, setFilters] = useState({});
-    const [uniqueOptions, setUniqueOptions] = useState({});
-    const [drawerOpen, setDrawerOpen] = useState(false);
-    const [totalExpenditure, setTotalExpenditure] = useState(0);
+     const name = useSelector((state) => state.user.name);
     const generateRandomColors = (num) => {
         const colors = [];
         for (let i = 0; i < num; i++) {
@@ -34,286 +28,398 @@ const AnalyticsConsumer = ({ email }) => {
         }
         return colors;
     };
-    
 
-    const airlines = [...new Set(filteredData.map(item => item.airline))];
-    const airlineExpenditure = airlines.map(airline => 
-        filteredData.filter(item => item.airline === airline)
-                    .reduce((sum, item) => sum + parseFloat(item.amount_paid || 0), 0)
-    );
-
-    const paymentMethods = [...new Set(filteredData.map(item => item.payment_method))];
-    const paymentCounts = paymentMethods.map(method => 
-        filteredData.filter(item => item.payment_method === method).length
-    );
-
-    const seatClasses = [...new Set(filteredData.map(item => item.seat_class))];
-    const seatClassCounts = seatClasses.map(cls => 
-        filteredData.filter(item => item.seat_class === cls).length
-    );
-
-    const checkInStatuses = [...new Set(filteredData.map(item => item.check_in_status))];
-    const checkInCounts = checkInStatuses.map(status => 
-        filteredData.filter(item => item.check_in_status === status).length
-    );
-
-    const dateExpenditure = filteredData.reduce((acc, item) => {
-        acc[item.date] = (acc[item.date] || 0) + parseFloat(item.amount_paid || 0);
-        return acc;
-    }, {});
-    
-    const flightDurationAmount = filteredData.map(item => ({
-        x: parseFloat(item.flight_duration || 0), 
-        y: parseFloat(item.amount_paid || 0)
-    }));
-
-
-
-    useEffect(() => {
-        setIsLoading(true); // Show loading animation // Simulate data fetching 
-        fetchConsumerHistory(email).then((res) => {
-            setData(res);
-            setFilteredData(res);
-            
-            const extractUniqueValues = (key) => [...new Set(res.map(item => item[key]))];
-            const keys = ["airline", "departure", "destination", "seat_class", "payment_method", 
-                          "baggage_allowance_kg", "gate_number", "terminal", "layover", 
-                          "cancellation_policy", "check_in_status", "loyalty_program"];
-            
-            const options = keys.reduce((acc, key) => {
-                acc[key] = extractUniqueValues(key);
-                return acc;
-                setIsLoading(false);
-            }, {});
-            
-            setUniqueOptions(options);
-            setFilters(keys.reduce((acc, key) => ({ ...acc, [key]: "All" }), {}));
-            setIsLoading(false);
-        });
-    }, [email]);
-
-    const filterData = useCallback(() => {
-        let updatedData = [...data];
-        Object.entries(filters).forEach(([key, value]) => {
-            if (value !== "All") {
-                updatedData = updatedData.filter(item => item[key] === value);
-            }
-        });
-        setFilteredData(updatedData);
-
-        // Calculate total expenditure
-        const total = updatedData.reduce((sum, item) => sum + parseFloat(item.amount_paid || 0), 0);
-        setTotalExpenditure(total);
-
-        setDrawerOpen(false);
-    }, [filters, data]);
-
-    useEffect(filterData, [filters, data]);
-
-    return (
-            <>
-           
-             {isLoading && <PlaneLoading isLoading={isLoading} />}         {/* For ANimation */}
-        <div className="analytics-container">
-            <h1>Analytics for {user.email}</h1>
-            <div className="filter-button-container" onClick={() => setDrawerOpen(true)}>
-                <span>Filter</span>
-                <IconButton>
-                    <MenuIcon />
-                </IconButton>
-            </div>
-
-            <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-                <div className="filter-container">
-                    <h3>Filters</h3>
-                    {Object.keys(uniqueOptions).map((filterKey) => (
-                        <div key={filterKey}>
-                            <label>{filterKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</label>
-                            <Select fullWidth value={filters[filterKey]} onChange={(e) => setFilters(prev => ({ ...prev, [filterKey]: e.target.value }))}>
-                                <MenuItem value="All">All</MenuItem>
-                                {uniqueOptions[filterKey].map((option) => (
-                                    <MenuItem key={option} value={option}>{option}</MenuItem>
-                                ))}
-                            </Select>
-                        </div>
-                    ))}
-                    <Button variant="contained" color="primary" onClick={filterData}>Apply Filters</Button>
-                </div>
-            </Drawer>
-            <div className="summary-container">
-                <h2>Total Expenditure: ${totalExpenditure.toFixed(2)}</h2>
-            </div>
-            <TableContainer component={Paper} className="table-container">
-                <Table stickyHeader>
-                    <TableHead>
-                        <TableRow>
-                            {[
-                                "Flight", "Airline", "Date", "Departure", "Destination", "Departure Time",
-                                "Arrival Time", "Duration (hrs)", "Status", "Amount Paid ($)",
-                                "Passenger Name", "Seat Class", "Seat Number", "Booking Ref",
-                                "Payment Method", "Baggage (kg)", "Gate", "Terminal", "Layover",
-                                "Cancellation Policy", "Check-in Status", "Loyalty Program"
-                            ].map(header => (
-                                <TableCell key={header} className="table-header">{header}</TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredData.map((row, index) => (
-                            <TableRow  className="data" key={index}>
-                                <TableCell>{row.flight}</TableCell>
-                                <TableCell>{row.airline}</TableCell>
-                                <TableCell>{row.date}</TableCell>
-                                <TableCell>{row.departure}</TableCell>
-                                <TableCell>{row.destination}</TableCell>
-                                <TableCell>{row.departure_time}</TableCell>
-                                <TableCell>{row.arrival_time}</TableCell>
-                                <TableCell>{row.flight_duration}</TableCell>
-                                <TableCell>{row.status}</TableCell>
-                                <TableCell>{row.amount_paid}</TableCell>
-                                <TableCell>{row.passenger_name}</TableCell>
-                                <TableCell>{row.seat_class}</TableCell>
-                                <TableCell>{row.seat_number}</TableCell>
-                                <TableCell>{row.booking_reference}</TableCell>
-                                <TableCell>{row.payment_method}</TableCell>
-                                <TableCell>{row.baggage_allowance_kg}</TableCell>
-                                <TableCell>{row.gate_number}</TableCell>
-                                <TableCell>{row.terminal}</TableCell>
-                                <TableCell>{row.layover}</TableCell>
-                                <TableCell>{row.cancellation_policy}</TableCell>
-                                <TableCell>{row.check_in_status}</TableCell>
-                                <TableCell>{row.loyalty_program}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
-           {/* Graphs Section */}
-           <div className="container charts-container">
-    <div className="row">
-        {/* Bar Chart - Total Expenditure per Airline */}
-        <div className="col-md-12 col-sm-12 chart-box">
-        <Bar 
-    data={{
-        labels: airlines,
-        datasets: [{
-            label: "Total Expenditure By Airline",
-            data: airlineExpenditure,
-            backgroundColor: "blue"
-        }]
-    }}
-    options={{
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            x: { title: { display: true, text: "Airlines" } },
-            y: { title: { display: true, text: "Expenditure ($)" } }
-        }
-    }}
-/>
-
-        </div>
-
-        {/* Line Chart - Total Expenditure Over Time */}
-        <div className="col-md-12 col-sm-12 chart-box">
-        <Line 
-    data={{
-        labels: Object.keys(dateExpenditure),
-        datasets: [{
-            label: "Total Expenditure By Date Booked",
-            data: Object.values(dateExpenditure),
-            borderColor: "green"
-        }]
-    }} 
-    options={{
-        responsive: true,
-        maintainAspectRatio: false,  
-    }}
-/>
-
-        </div>
-
-        {/* Pie Chart - Payment Method Distribution */}
-        <div className="col-md-6 col-sm-12 chart-box">
-            <Pie 
-                data={{
-                    labels: paymentMethods,
-                    datasets: [{ data: paymentCounts, backgroundColor:generateRandomColors(paymentMethods.length) }]
-                }}
-            />
-        </div>
-
-        {/* Scatter Plot - Flight Duration vs Amount Paid */}
-       {/* Scatter Plot - Flight Duration vs Amount Paid */}
-<div className="col-md-6 col-sm-12 chart-box bubble-chart">
-    <Bubble 
-        data={{
-            datasets: [{
-                label: "Duration vs. Amount Paid",
-                data: flightDurationAmount.map(item => ({
-                    x: item.x, 
-                    y: item.y, 
-                    r: Math.random() * 10 + 5 // Random radius for better visual appeal
-                })), 
-                backgroundColor: generateRandomColors(flightDurationAmount.length),
-                borderColor:generateRandomColors(flightDurationAmount.length),
-                borderWidth: 1
-            }]
-        }}
-        options={{
-            responsive: true,
-            maintainAspectRatio: false
-        }}
-    />
-</div>
-
-
-
-        {/* Doughnut Chart - Seat Class Distribution */}
-        <div className="col-md-6 col-sm-12 chart-box">
-            <Doughnut 
-                data={{
-                    labels: seatClasses,
-                    datasets: [{
-                        data: seatClassCounts,
-                        backgroundColor: generateRandomColors(seatClassCounts.length) // Dynamically generated colors
-                    }]
-                }}
-            />
-        </div>
-
-        {/* Radar Chart - Check-in Status Frequency */}
-        <div className="col-md-6 col-sm-12 chart-box">
-            {/* Polar Area Chart */}
-            <PolarArea 
-                data={{
-                    labels: checkInStatuses,
-                    datasets: [{
-                        label: "Check-in Status Frequency",
-                        data: checkInCounts,
-                        backgroundColor: generateRandomColors(checkInCounts.length) , // Different colors for each slice
-                        borderColor:generateRandomColors(checkInCounts.length) ,
-                        borderWidth: 1
-                    }]
-                }}
-                options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scale: {
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }
-                }}
-            />
-        </div>
-    </div>
-</div>
-
-        </div>
-        </>
-    );
+    const [data, setData] = useState([]);
+const [popupType, setPopupType] = useState(null);
+const [refreshTrigger, setRefreshTrigger] = useState(0);
+const [popupMessage, setPopupMessage] = useState(null);
+const [isLoading, setIsLoading] = useState(false);
+const user = useSelector((state) => state.user);
+const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
+const [filteredData, setFilteredData] = useState([]);
+const [filters, setFilters] = useState({});
+const [uniqueOptions, setUniqueOptions] = useState({});
+const [drawerOpen, setDrawerOpen] = useState(false);
+const [totalExpenditure, setTotalExpenditure] = useState(0);
+const visibleFields = [
+    'flightNo', 'airline', 'departure', 'departure_time', 'departure_date',
+    'destination', 'arrival_date', 'boarding_time', 'selectedClass',
+    'seatPreference', 'seatCount', 'mealPreference', 'totalAmount', 
+];
+const headerMap = {
+    boarding_time: "Arrival Time"
 };
 
+
+// Assuming filteredData contains the latest data
+const airlines = [...new Set(filteredData.map(item => item.airline))];
+const airlineExpenditure = airlines.map(airline =>
+    filteredData.filter(item => item.airline === airline)
+        .reduce((sum, item) => sum + parseFloat(item.totalAmount || 0), 0)
+);
+
+const seatClasses = ["business", "economy", "firstClass", "premium"];
+const seatClassCounts = seatClasses.map(cls =>
+    filteredData.reduce((count, item) => {
+        return item.selectedClass === cls ? count + item.seatCount : count;
+    }, 0)
+);
+
+const checkInStatuses = ["middle","window","aisle"];
+const checkInCounts = checkInStatuses.map(status =>
+    filteredData.filter(item => item.seatPreference=== status).length
+);
+
+const dateExpenditure = filteredData.reduce((acc, item) => {
+    const date = new Date(item.departure_date);
+    if (isNaN(date.getTime())) {
+        console.error("Invalid departureDate:", item.departure_date);
+        return acc;
+    }
+    const formattedDate = date.toISOString().split('T')[0]; // Format date (yyyy-mm-dd)
+    acc[formattedDate] = (acc[formattedDate] || 0) + parseFloat(item.totalAmount || 0);
+    return acc;
+}, {});
+
+const flightDurationAmount = filteredData.map(item => ({
+    x: new Date(item.arrival_date).getTime() - new Date(item.departure_date).getTime(),
+    y: parseFloat(item.totalAmount || 0)
+}));
+
+useEffect(() => {
+    if (isLoading) return; // Avoid running if already loading
+    setIsLoading(true);
+
+    fetchConsumerHistory(user.email).then((res) => {
+        const flights = res.bookings || [];
+        if (flights.length === 0) {
+            setData([]);
+            setFilteredData([]);
+            setUniqueOptions({});
+            setIsLoading(false);
+            return;
+        }
+
+        const requiredFields = [
+            'flightNo', 'airline', 'departure', 'departure_time', 'departure_date',
+            'destination', 'arrival_date', 'boarding_time', 'selectedClass', 
+            'seatPreference', 'seatCount', 'mealPreference', 'totalAmount',
+        ];
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // normalize
+
+        const pastFlights = flights
+            .filter(flight => new Date(flight.departure_date) < today) // 👈 changed to past flights
+            .map(flight => {
+                const filteredFlight = {};
+                requiredFields.forEach(field => {
+                    if (flight[field] !== undefined) {
+                        filteredFlight[field] = flight[field];
+                    }
+                });
+                return filteredFlight;
+            });
+
+        setData(pastFlights);
+        setFilteredData(pastFlights);
+
+        // ✅ Extract unique filter options
+        const options = {};
+        pastFlights.forEach(item => {
+            Object.entries(item).forEach(([key, val]) => {
+                if (!options[key]) options[key] = new Set();
+                options[key].add(val);
+            });
+        });
+
+        const unique = {};
+        Object.entries(options).forEach(([key, valSet]) => {
+            unique[key] = Array.from(valSet).sort();
+        });
+
+        setUniqueOptions(unique);
+
+        setIsLoading(false);
+    }).catch(error => {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+    });
+}, [user.email]);
+
+// State and imports...
+
+const filterData = useCallback(() => {
+    let updatedData = [...data];
+    Object.entries(filters).forEach(([key, value]) => {
+        if (value !== "All") {
+            updatedData = updatedData.filter(item => item[key] === value);
+        }
+    });
+    setFilteredData(updatedData);
+
+    const total = updatedData.reduce((sum, item) => sum + parseFloat(item.totalAmount || 0), 0);
+    setTotalExpenditure(total);
+
+    setDrawerOpen(false);
+}, [filters, data]);
+
+useEffect(() => {
+    filterData(); // ✅ Now this is defined earlier
+}, [filters, data]);
+
+useEffect(() => {
+    // your fetchConsumerHistory logic...
+}, [user.email]);
+
+useEffect(() => {
+    filterData(); // Apply filters when either filters or data change
+}, [filters, data]);
+
+
+    
+    
+    
+
+    
+
+    
+return (
+    <>
+       {isLoading && <PlaneLoading isLoading={isLoading} />} {/* For Animation */}
+
+<div className="analytics-container">
+    <h1>Upcoming Flight Details for {name}</h1>
+    <div className="filter-button-container" onClick={() => setDrawerOpen(true)}>
+        <span>Filter</span>
+        <IconButton>
+            <MenuIcon />
+        </IconButton>
+    </div>
+
+    <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+    <div className="filter-container" style={{ width: 300, padding: 16 }}>
+        <h3>Filters</h3>
+        {Object.keys(uniqueOptions).map((filterKey) => (
+            <div key={filterKey} style={{ marginBottom: 16 }}>
+                <label style={{ display: 'block', marginBottom: 4 }}>
+                    {filterKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                </label>
+                <Select
+                    fullWidth
+                    value={filters[filterKey] || "All"}
+                    onChange={(e) => setFilters(prev => ({ ...prev, [filterKey]: e.target.value }))}
+                >
+                    <MenuItem value="All">All</MenuItem>
+                    {uniqueOptions[filterKey]?.map((option) => (
+                        <MenuItem key={option} value={option}>{option}</MenuItem>
+                    ))}
+                </Select>
+            </div>
+        ))}
+        <Button variant="contained" color="primary" onClick={filterData}>Apply Filters</Button>
+    </div>
+</Drawer>
+
+
+    <div className="summary-container">
+        <h2>Total Expendutuer: ${totalExpenditure.toFixed(2)}</h2>
+    </div>
+
+
+
+    <TableContainer component={Paper} className="table-container">
+    <Table stickyHeader>
+        <TableHead>
+            <TableRow>
+                {visibleFields.map((key) => {
+                    const labelOverrides = {
+                        boarding_time: "Arrival Time"
+                    };
+
+                    const formattedKey = labelOverrides[key] || key
+                        .replace(/_/g, ' ')
+                        .replace(/\b\w/g, char => char.toUpperCase());
+
+                    return (
+                        <TableCell key={key} sx={{ fontWeight: "bold", backgroundColor: "#D4EDDA" }}>
+                            {formattedKey}
+                        </TableCell>
+                    );
+                })}
+            </TableRow>
+        </TableHead>
+
+        <TableBody>
+            {filteredData
+                .sort((a, b) => {
+                    if (a.status === "Missed" && b.status !== "Missed") return 1;
+                    if (a.status !== "Missed" && b.status === "Missed") return -1;
+                    return new Date(a.departure_date) - new Date(b.departure_date);
+                })
+                .map((row, rowIndex) => {
+                    const readableDepartureDate = row.departure_date
+                        ? new Date(row.departure_date).toLocaleDateString("en-US", {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })
+                        : '';
+
+                    const readableArrivalDate = row.arrival_date
+                        ? new Date(row.arrival_date).toLocaleDateString("en-US", {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })
+                        : '';
+
+                    const isRefundable = row.status === "Refundable";
+
+                    return (
+                        <TableRow key={rowIndex} sx={{ backgroundColor: isRefundable ? "#D4EDDA" : "inherit" }}>
+                            {visibleFields.map((key) => (
+                                <TableCell key={key} sx={{ backgroundColor: "#D4EDDA" }}>
+                                    {key === "departure_date" ? readableDepartureDate :
+                                     key === "arrival_date" ? readableArrivalDate :
+                                      row[key]}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    );
+                })}
+        </TableBody>
+    </Table>
+</TableContainer>
+
+
+    
+    
+    
+        
+                    {/* Graphs Section */}
+                    <div className="container charts-container">
+                        <div className="row">
+                            {/* Bar Chart - Total Expenditure per Airline */}
+                            <div className="col-md-12 col-sm-12 chart-box">
+                                <Bar 
+                                    data={{
+                                        labels: airlines,
+                                        datasets: [{
+                                            label: "Total Expense By Airline",
+                                            data: airlineExpenditure,
+                                            backgroundColor: "blue"
+                                        }]
+                                    }}
+                                    options={{
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        scales: {
+                                            x: { title: { display: true, text: "Airlines" } },
+                                            y: { title: { display: true, text: "Expenditure ($)" } }
+                                        }
+                                    }}
+                                />
+                            </div>
+        
+                            {/* Line Chart - Total Expenditure Over Time */}
+                            <div className="col-md-12 col-sm-12 chart-box">
+                                <Line 
+                                    data={{
+                                        labels: Object.keys(dateExpenditure),
+                                        datasets: [{
+                                            label: "Total Expense By Date Booked",
+                                            data: Object.values(dateExpenditure),
+                                            borderColor: "green"
+                                        }]
+                                    }} 
+                                    options={{
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                    }}
+                                />
+                            </div>
+        
+                            {/* Pie Chart - Payment Method Distribution */}
+    
+        
+                            {/* Scatter Plot - Flight Duration vs Amount Earned */}
+                            <div className="col-md-6 col-sm-12 chart-box bubble-chart">
+                                <Bubble 
+                                    data={{
+                                        datasets: [{
+                                            label: "Duration vs. Amount expend",
+                                            data: flightDurationAmount.map(item => ({
+                                                x: item.x,
+                                                y: item.y,
+                                                r: Math.random() * 10 + 5 // Random radius for better visual appeal
+                                            })),
+                                            backgroundColor: generateRandomColors(flightDurationAmount.length),
+                                            borderColor: generateRandomColors(flightDurationAmount.length),
+                                            borderWidth: 1
+                                        }]
+                                    }}
+                                    options={{
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                    }}
+                                />
+                            </div>
+        
+                            {/* Doughnut Chart - Seat Class Distribution */}
+                            <div className="col-md-6 col-sm-12 chart-box">
+                                <Doughnut 
+                                    data={{
+                                        labels: seatClasses,
+                                        datasets: [{
+                                            data: seatClassCounts,
+                                            backgroundColor: generateRandomColors(seatClassCounts.length)
+                                        }]
+                                    }}
+                                />
+                            </div>
+        
+                            {/* Radar Chart - Check-in Status Frequency */}
+                            <div className="col-md-6 col-sm-12 chart-box">
+                                <PolarArea 
+                                    data={{
+                                        labels: checkInStatuses,
+                                        datasets: [{
+                                            label: "Check-in Status Frequency",
+                                            data: checkInCounts,
+                                            backgroundColor: generateRandomColors(checkInCounts.length),
+                                            borderColor: generateRandomColors(checkInCounts.length),
+                                            borderWidth: 1
+                                        }]
+                                    }}
+                                    options={{
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        scale: {
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    {popupMessage && (
+                      <Popup 
+                        message={popupMessage} 
+                        type={popupType} 
+                        onClose={() => {
+                          setPopupMessage(null);
+                          setPopupType(null);
+                        }} 
+                      />
+                    )}
+                </div>
+            </>
+        );
+        
+    };
 export default AnalyticsConsumer;

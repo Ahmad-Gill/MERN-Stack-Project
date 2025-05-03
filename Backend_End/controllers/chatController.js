@@ -1,4 +1,5 @@
 const Chat = require('../models/Chat');
+const UpcomingEvent = require('../models/UpcomingEvent');
 
 // Send or add a new message
 exports.addMessage = async (req, res) => {

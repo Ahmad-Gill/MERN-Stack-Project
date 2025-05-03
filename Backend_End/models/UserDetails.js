@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const userdetailSchema = new mongoose.Schema({
   Full_Name: { type: String, required: true },
-  email: { type: String, required: true, unique: true , ref: 'User' },
+  email: { type: String, required: true , ref: 'User' },
   phone: {type:String, required:true},
   address: {type:String},
   gender: {type:String},

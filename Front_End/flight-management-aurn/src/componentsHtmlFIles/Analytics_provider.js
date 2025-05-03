@@ -17,6 +17,7 @@ import "../componentCssFiles/flight_consuer.scss";
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, ArcElement, Tooltip, Legend, RadialLinearScale);
 
 const UpcomingFlights_provider = () => {
+    const name = useSelector((state) => state.user.name);
     const [data, setData] = useState([]);
         const [popupType, setPopupType] = useState(null);
         const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -164,23 +165,14 @@ const UpcomingFlights_provider = () => {
         filterData(); // Trigger filtering when filters or data change
     }, [filters, data]);
     
-    const handleRefund = (row) => {
-        alert(`Processing refund for flight: ${row.flightName}`);
-    };
-    
-    const handlePayment = (row) => {
-        console.log("Processing payment for:", row);
-    
-        // Example: Redirect to a payment page or trigger a payment API
-        alert(`Redirecting to payment for flight: ${row.flightName}`);
-    };
+
     
     
     return (
         <>
             {isLoading && <PlaneLoading isLoading={isLoading} />} {/* For Animation */}
             <div className="analytics-container">
-                <h1>Past Flight Details for {user.email}</h1>
+                <h1>Past Flight Details for {name}</h1>
                 <div className="filter-button-container" onClick={() => setDrawerOpen(true)}>
                     <span>Filter</span>
                     <IconButton>

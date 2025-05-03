@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import "../componentCssFiles/Book_tickets.scss";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function Book_Now() {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchDate, setSearchDate] = useState("");
-  const [flightsData, setFlightsData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [searchDate, setSearchDate] = useState(""); 
+  const [searchTime, setSearchTime] = useState(""); 
+  const [minAvailableSeats, setMinAvailableSeats] = useState(0); 
+  const [flightsData, setFlightsData] = useState([]); 
   const [searchParams] = useSearchParams();
-  const flightIdFromSearch = searchParams.get("id"); // Get flight _id from the URL
-
-  // Fetch flight data from the API
+  const flightIdFromSearch = searchParams.get("id"); 
   useEffect(() => {
     fetch("http://localhost:5000/flight/geetAll")
       .then((response) => response.json())
@@ -22,26 +21,47 @@ function Book_Now() {
       })
       .catch((error) => console.error("Error fetching flight data:", error));
   }, []);
-
-  // Filtered data based on search or _id from URL
   const filteredData = flightsData.filter((data) => {
-    console.log("-----------------ID",flightIdFromSearch)
+    const searchTermLower = searchTerm.toLowerCase();
+
     const textMatch =
-      data.flightName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.airlineCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      data.destination.toLowerCase().includes(searchTerm.toLowerCase());
+      data.flightName.toLowerCase().includes(searchTermLower) ||
+      data.airlineCode.toLowerCase().includes(searchTermLower) ||
+      data.origin.toLowerCase().includes(searchTermLower) ||
+      data.destination.toLowerCase().includes(searchTermLower) ||
+      data.departureTime.toLowerCase().includes(searchTermLower) ||
+      data.arrivalTime.toLowerCase().includes(searchTermLower);
+    const dateMatch = searchDate === "" || data.departureDate.split("T")[0] === searchDate;
+    const timeMatch =
+      searchTime === "" ||
+      data.departureTime.includes(searchTime) ||
+      data.arrivalTime.includes(searchTime);
+    const availableBusinessSeats =
+      data.seatStats.business.totalSeats - data.seatStats.business.bookedSeats;
+    const availableEconomySeats =
+      data.seatStats.economy.totalSeats - data.seatStats.economy.bookedSeats;
+    const availableFirstClassSeats =
+      data.seatStats.firstClass.totalSeats - data.seatStats.firstClass.bookedSeats;
+    const availablePremiumSeats =
+      data.seatStats.premium.totalSeats - data.seatStats.premium.bookedSeats;
 
-    const dateMatch =
-      searchDate === "" || data.departureDate.split("T")[0] === searchDate;
+    const totalAvailableSeats =
+      availableBusinessSeats +
+      availableEconomySeats +
+      availableFirstClassSeats +
+      availablePremiumSeats;
 
-    // If there's a flight ID in the searchParams, only show the matching flight
+    const availableSeatsMatch = totalAvailableSeats >= minAvailableSeats;
     const idMatch = flightIdFromSearch ? data._id === flightIdFromSearch : true;
-   
 
-    return textMatch && dateMatch && idMatch;
+    return (
+      textMatch &&
+      dateMatch &&
+      timeMatch &&
+      availableSeatsMatch &&
+      idMatch
+    );
   });
-
   function goToDetails(
     id,
     flight,
@@ -61,13 +81,11 @@ function Book_Now() {
   return (
     <div className="Flights">
       <h1 id="flight_heading">Flights</h1>
-
-      {/* Search bar */}
       <div className="search-container">
         <input
           type="text"
           className="search-input"
-          placeholder="Search by flight no, airline, departure, arrival..."
+          placeholder="Search by flight no, airline, departure, arrival, or destination"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -75,7 +93,21 @@ function Book_Now() {
           type="date"
           className="search-input"
           value={searchDate}
-          onChange={(e) => setSearchDate(e.target.value)}
+          onChange={(e) => setSearchDate(e.target.value)} 
+        />
+        <input
+          type="time"
+          className="search-input"
+          placeholder="Search by Time (Departure/Arrival)"
+          value={searchTime}
+          onChange={(e) => setSearchTime(e.target.value)} 
+        />
+        <input
+          type="number"
+          className="search-input"
+          placeholder="Min Available Seats"
+          value={minAvailableSeats}
+          onChange={(e) => setMinAvailableSeats(Number(e.target.value))}
         />
       </div>
 
@@ -85,11 +117,11 @@ function Book_Now() {
             <th>Flight No.</th>
             <th>Airways</th>
             <th>Departure</th>
-            <th>Time</th>
-            <th>Date</th>
+            <th>Departure Time</th>
+            <th>Departure Date</th>
             <th>Arrival</th>
-            <th>Time</th>
-            <th>Date</th>
+            <th>Arrival Time</th>
+            <th>Arrival Date</th>
             <th>Available Seats</th>
             <th></th>
           </tr>
@@ -98,17 +130,13 @@ function Book_Now() {
           {filteredData.length > 0 ? (
             filteredData.map((data) => {
               const availableBusinessSeats =
-                data.seatStats.business.totalSeats -
-                data.seatStats.business.bookedSeats;
+                data.seatStats.business.totalSeats - data.seatStats.business.bookedSeats;
               const availableEconomySeats =
-                data.seatStats.economy.totalSeats -
-                data.seatStats.economy.bookedSeats;
+                data.seatStats.economy.totalSeats - data.seatStats.economy.bookedSeats;
               const availableFirstClassSeats =
-                data.seatStats.firstClass.totalSeats -
-                data.seatStats.firstClass.bookedSeats;
+                data.seatStats.firstClass.totalSeats - data.seatStats.firstClass.bookedSeats;
               const availablePremiumSeats =
-                data.seatStats.premium.totalSeats -
-                data.seatStats.premium.bookedSeats;
+                data.seatStats.premium.totalSeats - data.seatStats.premium.bookedSeats;
 
               const totalAvailableSeats =
                 availableBusinessSeats +
@@ -128,7 +156,7 @@ function Book_Now() {
                   <td>{data.arrivalDate.split("T")[0]}</td>
                   <td>{totalAvailableSeats}</td>
                   <td>
-                    {totalAvailableSeats === 0 ? (
+                    {totalAvailableSeats <= 0 ? (
                       <span>Full</span>
                     ) : (
                       <button

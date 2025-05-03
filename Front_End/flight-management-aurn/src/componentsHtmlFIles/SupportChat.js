@@ -33,7 +33,7 @@ const SupportChat = () => {
         if (data.messages) {
           const loadedMessages = data.messages.map((msg) => ({
             text: msg.text,
-            sender: msg.type === 'original' ? 'user' : 'support',  // ✅ Correctly identify sender
+            sender: msg.type === 'original' ? 'user' : 'support', 
           }));
           setMessages(loadedMessages);
           scrollToBottom();
@@ -75,7 +75,6 @@ const SupportChat = () => {
       console.log("Server response:", data);
 
       if (response.ok) {
-        // Add server response as support message
         const responseMessage = { text: data.responseText, sender: 'support' };
         setMessages((prevMessages) => [...prevMessages, responseMessage]);
         scrollToBottom();
@@ -103,12 +102,9 @@ const SupportChat = () => {
 
   return (
     <>
-      {/* Floating Chat Icon */}
       <div className="chat-icon" onClick={toggleChat}>
         <FontAwesomeIcon icon={faMessage} size="lg" />
       </div>
-
-      {/* Chat Popup Window */}
       {isOpen && (
         <div className="chat-popup">
           <div className="cta-button chat-header">

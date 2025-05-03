@@ -53,6 +53,9 @@ const haversineDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 function Home() {
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to the top on component mount
+}, []);
   const user = useSelector((state) => state.user);       //REdux comands
   const { isActive, isCustomer, isProvider } = useSelector((state) => state.user);
 

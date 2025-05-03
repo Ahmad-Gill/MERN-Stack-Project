@@ -2,6 +2,204 @@ const Flight = require('../models/Flight');
 const nodemailer = require('nodemailer');
 const emailjs = require('emailjs-com'); 
 const Booking = require("../models/bookedFlight");
+const mongoose = require("mongoose");
+const UpcomingEvent = require('../models/UpcomingEvent');
+
+
+async function addUpcomingEvent(email, text) {
+  const currentDateTime = new Date();
+  console.log(email,text)
+  
+  const event = new UpcomingEvent({
+    email: email,
+    testDate: currentDateTime,  // Automatically set to the current date and time
+    testTime: currentDateTime.toLocaleTimeString(),  // Automatically set to the current time
+    title: text
+  });
+
+  try {
+    const savedEvent = await event.save();
+    console.log('Event added:', savedEvent);
+  } catch (err) {
+    console.error('Error adding event:', err);
+  }
+}
+
+
+
+
+
+const sendFlightTicketDetail = async (req, res) => {
+  const {
+    email,
+    flightNo,
+    airline,
+    departure,
+    departure_time,
+    departure_date,
+    destination,
+    arrival_date,
+    boarding_time,
+    selectedClass,
+    seatPreference,
+    seatCount,
+    mealPreference,
+    totalAmount,
+    paymentConfirmed
+  } = req.body;
+
+  // Basic validation
+  if (
+    !email || !flightNo || !airline || !departure || !departure_time ||
+    !departure_date || !destination || !arrival_date || !boarding_time ||
+    !selectedClass || !seatPreference || !seatCount || !mealPreference ||
+    !totalAmount || paymentConfirmed === undefined
+  ) {
+    return res.status(400).json({ message: 'All flight details are required.' });
+  }
+
+  console.log("Sending flight ticket email to:", email);
+
+  const emailText = `
+🎫 Flight Ticket Details
+
+Thank you for booking with us! Here are your flight details:
+
+✈️ Flight Number: ${flightNo}
+🛫 Airline: ${airline}
+📍 Departure: ${departure}
+🕒 Departure Time: ${departure_time}
+📅 Departure Date: ${new Date(departure_date).toLocaleDateString()}
+
+📌 Destination: ${destination}
+📅 Arrival Date: ${new Date(arrival_date).toLocaleDateString()}
+🕑 Arival Time: ${boarding_time}
+
+💺 Class: ${selectedClass}
+🪟 Seat Preference: ${seatPreference}
+👥 Number Seat: ${seatCount}
+🍽️ Meal Preference: ${mealPreference}
+
+💵 Total Amount: $${totalAmount}
+✅ Payment Confirmed: ${paymentConfirmed ? 'Yes' : 'No'}
+
+
+Thank you,
+Flight Booking Team
+`;
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'aipicmailmanagement@gmail.com',
+        pass: 'ypzj kskr icvl joqy' // Consider using environment variables!
+      }
+    });
+
+    const info = await transporter.sendMail({
+      from: 'aipicmailmanagement@gmail.com',
+      to: email,
+      subject: 'Your Flight Ticket Confirmation',
+      text: emailText
+    });
+
+    res.json({ message: 'Email sent successfully', info });
+    addUpcomingEvent(email, 'Sent Flight ticket');
+  } catch (error) {
+    console.error("Email send error:", error);
+    res.status(500).json({ message: 'Failed to send email', error });
+  }
+};
+
+
+
+
+
+const updatepayment = async (req, res) => {
+  const { _id } = req.query; // 👈 Use `req.query` for GET request
+  console.log("Received ID:", _id);
+
+  if (!_id) {
+    return res.status(400).json({ success: false, message: "Flight ID is required" });
+  }
+
+  try {
+    const updatedFlight = await Booking.findByIdAndUpdate(
+      _id,
+      { paymentConfirmed: true },
+      { new: true }
+    );
+
+    if (!updatedFlight) {
+      return res.status(404).json({ success: false, message: "Flight not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Payment confirmed" });
+  } catch (error) {
+    console.error("Update payment error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+const sendEmail = async (req, res) => {
+ 
+
+  const { to, flight, date, seat, bank_name, acc_number, acc_name, price } = req.body;
+
+  if (!to || !flight || !date || !seat || !bank_name || !acc_number || !acc_name || !price) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
+  console.log("Attempting to send email to:", to);
+
+  // Predefined email text with dynamic values
+  const emailText = `
+Thank You for Your Order!
+
+Thank you for confirming your flight seat reservations. We're excited to assist you with your upcoming trip!
+
+Booking Details:
+
+Flight: ${flight}
+Date: ${date}
+Number of Seats: ${seat}
+
+To proceed with your booking, please make the payment of $${price} to the following account details:
+
+Payment Details:
+
+Bank Name: ${bank_name}
+Account Number: ${acc_number}
+Account Name: ${acc_name}
+
+Total Amount: $${price}
+`;
+
+  try {
+    // Create transporter
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'aipicmailmanagement@gmail.com',
+        pass: 'ypzj kskr icvl joqy'
+      }
+    });
+
+    // Send email
+    const info = await transporter.sendMail({
+      from: 'aipicmailmanagement@gmail.com',
+      to: to,
+      subject: 'Thank You for Your Flight Reservation!',
+      text: emailText
+    });
+
+    res.json({ message: 'Email sent successfully', info });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to send email', error });
+  }
+};
+
 
 const getBookingsByEmail = async (req, res) => {
   try {
@@ -18,6 +216,21 @@ const getBookingsByEmail = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+const getAllBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find(); // Fetch all bookings
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: "No bookings found." });
+    }
+
+    res.status(200).json({ message: "All bookings fetched successfully", bookings });
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const saveBooking = async (req, res) => {
   try {
     const {
@@ -38,15 +251,19 @@ const saveBooking = async (req, res) => {
       totalAmount,
     } = req.body;
 
-    // Basic validation
-    if (!email || !flightId || !selectedClass || !seatPreference || !seatCount || !totalAmount) {
-      return res.status(400).json({ message: "Required booking details missing." });
-    }
+    // Convert seatCount to number
+    const seatCountNumber = Number(seatCount);
 
-    // Prevent duplicate booking
-    const existingBooking = await Booking.findOne({ email, flightId });
-    if (existingBooking) {
-      return res.status(409).json({ message: "You have already booked this flight." });
+    // Basic validation
+    if (
+      !email ||
+      !flightId ||
+      !selectedClass ||
+      !seatPreference ||
+      !seatCountNumber ||
+      !totalAmount
+    ) {
+      return res.status(400).json({ message: "Required booking details missing." });
     }
 
     // Save booking
@@ -63,12 +280,13 @@ const saveBooking = async (req, res) => {
       boarding_time,
       selectedClass,
       seatPreference,
-      seatCount,
+      seatCount: seatCountNumber,
       mealPreference,
       totalAmount,
     });
 
     await newBooking.save();
+    await addUpcomingEvent(email, `Booking Saved for flight  ${flightNo} -> ${airline}`);
 
     // Update Flight document
     const flight = await Flight.findById(flightId);
@@ -78,33 +296,62 @@ const saveBooking = async (req, res) => {
 
     // Check seat availability before booking
     const seatCategory = flight.seats[selectedClass][seatPreference];
-    if (seatCategory.booked + seatCount > seatCategory.total) {
-      return res.status(400).json({ message: "Not enough available seats." });
-    }
 
-    // Update booked seats count
-    seatCategory.booked += seatCount;
+    // Update booked seats count in the relevant seat category
+    seatCategory.booked += seatCountNumber;
 
     // Update pricing and earnings
     const seatPrice = flight.pricing[selectedClass][seatPreference];
-    const earnings = seatPrice * seatCount;
+    const earnings = seatPrice * seatCountNumber;
 
-    // Update earnings for the selected class
+    // Update total earnings for the selected class
     flight.totalEarnings += earnings;
 
     // Save the updated flight document
     await flight.save();
 
-    res.status(201).json({
-      message: "Booking saved and flight updated successfully.",
+    // Call sendEmail using mock req/res
+    const emailReq = {
+      body: {
+        to: email,
+        flight: flightNo,
+        date: departure_date,
+        seat: `${seatCountNumber} (${selectedClass}, ${seatPreference})`,
+        bank_name: "Bank of Flights",
+        acc_number: "1234567890",
+        acc_name: "Air Booking Services",
+        price: totalAmount,
+      },
+    };
+
+    const emailRes = {
+      status: (code) => ({
+        json: (data) => console.log(`[Email Response ${code}]`, data),
+      }),
+      json: (data) => console.log("[Email Response]", data),
+    };
+
+    await sendEmail(emailReq, emailRes);
+
+    // Send final response after saving the booking and sending email
+    
+    return res.status(201).json({
+      message: "Booking saved, flight updated, and confirmation email sent.",
       booking: newBooking,
     });
 
   } catch (error) {
     console.error("Error saving booking or updating flight:", error);
+
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Duplicate booking detected for this email." });
+    }
+
     res.status(500).json({ message: "Internal server error." });
   }
 };
+
+
 
 
 const deleteFlight = async (req, res) => {
@@ -200,7 +447,6 @@ const createFlight = async (req, res) => {
       status,
       email
     } = req.body;
-
     // Validate required fields
     const missingFields = [
       'flightName', 'origin', 'destination',
@@ -241,6 +487,16 @@ const createFlight = async (req, res) => {
       mutton: false,
       beef: false
     };
+    const newPrice = {};
+    ['business', 'economy', 'firstClass', 'premium'].forEach(classType => {
+      newPrice[classType] = {};
+      ['window', 'middle', 'aisle'].forEach(seatType => {
+        const originalPrice = pricing?.[classType]?.[seatType] || 0;
+        newPrice[classType][seatType] = Math.round(originalPrice * 1.1); // Integer + 10%
+      });
+    });
+    console.log("Final pricing data:", newPrice);
+    
 
     const newFlight = new Flight({
       email,
@@ -254,13 +510,14 @@ const createFlight = async (req, res) => {
       arrivalTime,
       totalEarnings:0,
       seats: formattedSeats,
-      pricing,
+      pricing : newPrice,
       foodOptions: foodOptions || defaultFoodOptions,
       status,
       
     });
 
     const savedFlight = await newFlight.save();
+    await addUpcomingEvent(email, `Flight Listing Aded successfully  ${origin} -> ${destination}`);
     console.log(newFlight)
     res.status(201).json({
       message: "Flight created successfully",
@@ -275,60 +532,6 @@ const createFlight = async (req, res) => {
 
 
 // Send email
-const sendEmail = async (req, res) => {
-  const { to, flight, date, seat, bank_name, acc_number, acc_name, price } = req.body;
-
-  if (!to || !flight || !date || !seat || !bank_name || !acc_number || !acc_name || !price) {
-    return res.status(400).json({ message: 'All fields are required.' });
-  }
-
-  // Predefined email text with dynamic values
-  const emailText = `
-Thank You for Your Order!
-
-Thank you for confirming your flight seat reservations. We're excited to assist you with your upcoming trip!
-
-Booking Details:
-
-Flight: ${flight}
-Date: ${date}
-Seat: ${seat}
-
-To proceed with your booking, please make the payment of $${price} to the following account details:
-
-Payment Details:
-
-Bank Name: ${bank_name}
-Account Number: ${acc_number}
-Account Name: ${acc_name}
-
-Total Amount: $${price}
-`;
-
-  try {
-    // Create transporter
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'aipicmailmanagement@gmail.com',
-        pass: 'ypzj kskr icvl joqy'
-      }
-    });
-
-    // Send email
-    const info = await transporter.sendMail({
-      from: 'aipicmailmanagement@gmail.com',
-      to: to,
-      subject: 'Thank You for Your Flight Reservation!',
-      text: emailText
-    });
-
-    res.json({ message: 'Email sent successfully', info });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Failed to send email', error });
-  }
-};
 
 const getAllFlights = async (req, res) => {
   try {
@@ -392,4 +595,7 @@ module.exports = {
   getAllFlights,
   getBookingsByEmail,
   saveBooking,
+  getAllBookings,
+  updatepayment,
+  sendFlightTicketDetail,
 };
