@@ -72,9 +72,10 @@ const UpcomingFlights_provider = () => {
             if (isLoading) return; // Avoid running if already loading
         
             setIsLoading(true);
+            console.log(user.email)
         
             fetchConsumerHistory(user.email).then((res) => {
-                let flights = (res.flights || []).filter(flight => {
+                let flights = (res || []).filter(flight => {
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
                     const departureDate = new Date(flight.departureDate);
@@ -82,8 +83,10 @@ const UpcomingFlights_provider = () => {
                     return departureDate >= today;
                 });
                 
+                
         
                 setData(flights);
+                console.log(flights)
                 setFilteredData(flights);
         
                 const extractUniqueValues = (key) => [...new Set(flights.map(item => item[key]))];

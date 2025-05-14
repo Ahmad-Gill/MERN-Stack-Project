@@ -15,7 +15,7 @@ const ProviderProfile = () => {
   const location = useLocation();
   const { updateProfileImage } = useUser();
 
-  const email = location.state?.email || "No Email Provided";
+  const email = user.email || "No Email Provided";
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -55,6 +55,7 @@ const ProviderProfile = () => {
     
     try {
       const response = await fetch(`http://localhost:5000/user?email=${encodeURIComponent(email)}`);
+      console.log(response)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

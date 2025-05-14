@@ -74,17 +74,19 @@ const UpcomingFlights_provider = () => {
         setIsLoading(true);
     
         fetchConsumerHistory(user.email).then((res) => {
-            const allFlights = res.flights || [];
-    
-            // ✅ Filter only past flights (not today)
+            const allFlights = res || []; // ✅ 'res' is already the flights array
+        
+            // ✅ Filter only past flights (excluding today)
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-    
+        
             const pastFlights = allFlights.filter(flight => {
                 const departureDate = new Date(flight.departureDate);
                 departureDate.setHours(0, 0, 0, 0);
                 return departureDate < today;
             });
+        
+        
     
             // ✅ Start processing the filtered list
             setData(pastFlights);

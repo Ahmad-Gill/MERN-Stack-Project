@@ -17,7 +17,7 @@ export const fetchConsumerHistory = async (email) => {
         const filteredFlights = flights.filter(flight => flight.email === email);
         console.log(filteredFlights)
 
-        return filteredFlights;
+        return data;
 
     } catch (error) {
         console.error('Error fetching data:', error);

@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   const location = useLocation();
   const { updateProfileImage } = useUser();
 
-  const email = location.state?.email || "No Email Provided";
+  const email = user.email || "No Email Provided";
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 

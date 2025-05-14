@@ -15,7 +15,8 @@ const CustomizeProfile = () => {
   const location = useLocation();
   const { updateProfileImage } = useUser();
 
-  const email = location.state?.email || "No Email Provided";
+  const email = user.email || "No Email Provided";
+  console.log(email)
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 

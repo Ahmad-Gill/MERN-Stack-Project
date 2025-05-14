@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { fetchConsumerHistory } from "./flight_provider_Get";
+import { fetchConsumerHistory } from "./flight_provider_GetA";
 import { Bar, Line, Pie, Scatter, Doughnut, Radar,Bubble , PolarArea } from "react-chartjs-2";
 import { useSelector, useDispatch } from "react-redux";
 import PlaneLoading from "./PlaneLoading";   // for ANimation
